@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIKOTOK DOWNLOAD LAB - Download Video Gratis CUY! 🚀</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.8/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #050814;
+    --bg-secondary: #0a1128;
+    --accent: #ff0050;
+    --accent2: #00f2ea;
+    --glow: rgba(255, 0, 80, 0.5);
+  }
+  * { -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    background-image: 
+      radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.15), transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(139, 92, 246, 0.1), transparent 50%);
+    min-height: 100vh;
+    color: #e5e7eb;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, .font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+  
+  /* Platform Themes */
+  [data-theme="tiktok"] { --accent: #ff0050; --accent2: #00f2ea; --glow: rgba(255, 0, 80, 0.4); --bg-accent: #1a0a14; }
+  [data-theme="youtube"] { --accent: #ff0033; --accent2: #ffffff; --glow: rgba(255, 0, 51, 0.4); --bg-accent: #1a0508; }
+  [data-theme="instagram"] { --accent: #e1306c; --accent2: #fcaf45; --glow: rgba(225, 48, 108, 0.4); --bg-accent: #1a0a12; }
+  [data-theme="facebook"] { --accent: #1877f2; --accent2: #42b72a; --glow: rgba(24, 119, 242, 0.4); --bg-accent: #0a1428; }
+  [data-theme="twitter"] { --accent: #1da1f2; --accent2: #ffffff; --glow: rgba(29, 161, 242, 0.4); --bg-accent: #0a1828; }
+  [data-theme="spotify"] { --accent: #1db954; --accent2: #191414; --glow: rgba(29, 185, 84, 0.4); --bg-accent: #0a1a10; }
+  [data-theme="transcript"] { --accent: #a855f7; --accent2: #ec4899; --glow: rgba(168, 85, 247, 0.4); --bg-accent: #140a1e; }
+  
+  .platform-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .platform-card.active {
+    background: linear-gradient(135deg, var(--bg-accent), rgba(255,255,255,0.02));
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--glow);
+  }
+  
+  .accent-gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+  }
+  .accent-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px var(--glow);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Animated dots */
+  .animated-dots::after {
+    content: '';
+    display: inline-block;
+    width: 1.5em;
+    text-align: left;
+    animation: dots 1.4s steps(4, end) infinite;
+  }
+  @keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+  }
+  
+  /* Spinner */
+  .spinner {
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--accent);
+    border-right-color: var(--accent2);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 0.8s linear infinite;
+  }
+  .spinner-sm {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  /* Glass input */
+  .glass-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+  }
+  .glass-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow);
+  }
+  
+  /* Custom checkbox */
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .check-label:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--accent);
+  }
+  .check-label input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .check-label input:checked + .check-box {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+  }
+  .check-box svg {
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s;
+  }
+  .check-label input:checked + .check-box svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* FAQ accordion */
+  .faq-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .faq-item.open {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.05);
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .faq-item.open .faq-answer { max-height: 500px; }
+  .faq-chevron { transition: transform 0.3s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  
+  /* Tabs */
+  .tab-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    box-shadow: 0 4px 20px var(--glow);
+  }
+  
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+    backdrop-filter: blur(10px);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+    z-index: 1000;
+    transform: translateX(400px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 400px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .toast.show { transform: translateX(0); }
+  .toast.error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+    box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+  }
+  
+  /* Loader overlay */
+  .loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 20, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .loader-overlay.show { display: flex; }
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0a0f1f; }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 5px; }
+  
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.5s ease-out; }
+  
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px var(--glow); }
+    50% { box-shadow: 0 0 40px var(--glow); }
+  }
+  .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+  
+  /* Hero background */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(circle at 30% 20%, var(--accent), transparent 40%),
+      radial-gradient(circle at 70% 60%, var(--accent2), transparent 40%);
+    opacity: 0.15;
+    animation: float 20s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0,0) rotate(0deg); }
+    50% { transform: translate(-20px, 20px) rotate(180deg); }
+  }
+  
+  .platform-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+  
+  .platform-card .platform-logo {
+    filter: grayscale(0.3);
+    transition: filter 0.3s;
+  }
+  .platform-card.active .platform-logo {
+    filter: grayscale(0);
+  }
+  
+  .transcript-text {
+    white-space: pre-wrap;
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+  
+  /* Hide scrollbar for nav */
+  .nav-scroll::-webkit-scrollbar { display: none; }
+  .nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  .audio-player-custom {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+</style>
+</head>
+<body data-theme="tiktok">
+
+<!-- Toast notification -->
+<div id="toast" class="toast">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <div>
+    <div class="font-semibold" id="toastTitle">Sukses Cuy!</div>
+    <div class="text-sm opacity-90" id="toastMsg">Liat notifikasi browser ya!</div>
+  </div>
+</div>
+
+<!-- Loader overlay -->
+<div id="loaderOverlay" class="loader-overlay">
+  <div class="text-center fade-up">
+    <div class="spinner mx-auto mb-6"></div>
+    <p class="text-2xl font-bold font-display" id="loaderText">
+      Lagi Ngambil Video <span id="loaderPlatform">TikTok</span><span class="animated-dots"></span>
+    </p>
+    <p class="text-sm opacity-60 mt-3">Sabar ya bre, lagi diproses nih...</p>
+  </div>
+</div>
+
+<div class="relative min-h-screen">
+  <div class="hero-bg"></div>
+  
+  <!-- Header -->
+  <header class="relative z-10 pt-10 pb-6 px-4 text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs mb-6">
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      <span>Semua Server Online • 2026 Edition</span>
+    </div>
+    <h1 class="text-5xl md:text-7xl font-black font-display tracking-tight mb-4">
+      <span class="accent-text">TIKOTOK</span>
+      <span class="text-white"> DOWNLOAD LAB</span>
+    </h1>
+    <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+      Download dari banyak platform <span class="font-bold accent-text">GRATIS CUY!</span> 🚀
+    </p>
+    <p class="text-sm text-gray-500 mt-2">No ads, no limit, no ribet. Sikat bre!</p>
+  </header>
+
+  <!-- Platform Navigation -->
+  <nav class="relative z-10 px-4 max-w-6xl mx-auto mb-8">
+    <div class="nav-scroll flex gap-3 overflow-x-auto pb-2 justify-start md:justify-center">
+      <button class="platform-card active rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="tiktok" data-theme-switch="tiktok">
+        <img src="https://cdn.simpleicons.org/tiktok/ffffff" class="platform-logo" alt="TikTok">
+        <span class="font-semibold">TikTok</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="youtube" data-theme-switch="youtube">
+        <img src="https://cdn.simpleicons.org/youtube/ffffff" class="platform-logo" alt="YouTube">
+        <span class="font-semibold">YouTube</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="instagram" data-theme-switch="instagram">
+        <img src="https://cdn.simpleicons.org/instagram/ffffff" class="platform-logo" alt="Instagram">
+        <span class="font-semibold">Instagram</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="facebook" data-theme-switch="facebook">
+        <img src="https://cdn.simpleicons.org/facebook/ffffff" class="platform-logo" alt="Facebook">
+        <span class="font-semibold">Facebook</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="twitter" data-theme-switch="twitter">
+        <img src="https://cdn.simpleicons.org/x/ffffff" class="platform-logo" alt="Twitter">
+        <span class="font-semibold">Twitter/X</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="spotify" data-theme-switch="spotify">
+        <img src="https://cdn.simpleicons.org/spotify/ffffff" class="platform-logo" alt="Spotify">
+        <span class="font-semibold">Spotify</span>
+      </button>
+      <button class="platform-card rounded-2xl px-4 py-3 flex items-center gap-3 min-w-[140px] transition-all" data-platform="transcript" data-theme-switch="transcript">
+        <svg class="platform-logo" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="8" y1="13" x2="16" y2="13"/>
+          <line x1="8" y1="17" x2="16" y2="17"/>
+        </svg>
+        <span class="font-semibold">Transcript</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="relative z-10 px-4 max-w-4xl mx-auto pb-20">
+    
+    <!-- Download Section -->
+    <section id="downloadSection" class="platform-card rounded-3xl p-6 md:p-8 mb-8 fade-up">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-2xl accent-gradient flex items-center justify-center pulse-glow">
+          <img id="activePlatformLogo" src="https://cdn.simpleicons.org/tiktok/ffffff" class="w-10 h-10" alt="">
+        </div>
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold font-display">Download <span id="activePlatformName" class="accent-text">TikTok</span></h2>
+          <p class="text-sm text-gray-400" id="platformTagline">Video viral langsung ke HP lo, no watermark!</p>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-lg font-semibold mb-3">
+          Paste disini, bre! 👇
+        </label>
+        <div class="flex flex-col md:flex-row gap-3">
+          <div class="flex-1 relative">
+            <input 
+              type="text" 
+              id="urlInput" 
+              placeholder="https://www.tiktok.com/@user/video/..." 
+              class="glass-input w-full px-5 py-4 rounded-xl text-white placeholder-gray-500 pr-24"
+            >
+            <button id="pasteBtn" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-semibold transition flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="8" y="2" width="8" height="4" rx="1"/>
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              </svg>
+              Paste
+            </button>
+          </div>
+          <button id="downloadBtn" class="btn-primary px-8 py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 min-w-[160px]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            DOWNLOAD!
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-2" id="urlHint">💡 Tips: Copy link dari aplikasi, tinggal paste aja disini!</p>
+      </div>
+
+      <!-- Options -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3">Pilih Kualitas, bre:</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="check-label">
+            <input type="checkbox" id="optHD1080" checked>
+            <span class="check-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div class="flex-1">
+              <div class="font-semibold">Full HD (1080p)</div>
+              <div class="text-xs text-gray-400">Kualitas paling top</div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded-full accent-gradient font-bold">BEST</span>
+          </label>
+          <label class="check-label">
+            <input type="checkbox" id="optHD720">
+            <span class="check-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div class="flex-1">
+              <div class="font-semibold">HD (720p)</div>
+              <div class="text-xs text-gray-400">Lebih ringan, tetep oke</div>
+            </div>
+          </label>
+          <label class="check-label">
+            <input type="checkbox" id="optAudio">
+            <span class="check-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div class="flex-1">
+              <div class="font-semibold">Audio Only (MP3)</div>
+              <div class="text-xs text-gray-400">Cuma suaranya aja</div>
+            </div>
+          </label>
+          <label class="check-label">
+            <input type="checkbox" id="optNoWatermark" checked>
+            <span class="check-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div class="flex-1">
+              <div class="font-semibold">Tanpa Watermark</div>
+              <div class="text-xs text-gray-400">Bersih tanpa logo platform</div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30 font-bold">CLEAN</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="resultArea" class="hidden p-5 rounded-2xl bg-green-500/10 border border-green-500/30">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-green-400 mb-1">Sukses Ngambil Video! 🎉</h4>
+            <p class="text-sm text-gray-300 mb-3" id="resultMsg">Video <span id="resultPlatform">TikTok</span> udah siap. Liat notifikasi browser buat detailnya!</p>
+            <a id="resultLink" href="#" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg accent-gradient font-semibold text-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Klik buat buka/unduh
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs Navigation -->
+    <div class="flex gap-2 mb-6 overflow-x-auto nav-scroll pb-2">
+      <button class="tab-btn active font-semibold" data-tab="tutorial">📚 Tutorial</button>
+      <button class="tab-btn font-semibold" data-tab="faq">❓ FAQ</button>
+      <button class="tab-btn font-semibold" data-tab="feedback">💬 Feedback</button>
+    </div>
+
+    <!-- Tutorial Tab -->
+    <section id="tab-tutorial" class="platform-card rounded-3xl p-6 md:p-8 mb-8 fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold font-display mb-6 flex items-center gap-3">
+        <span>📚</span>
+        <span>Cara Download <span class="accent-text" id="tutorialPlatform">TikTok</span></span>
+      </h2>
+      <div id="tutorialContent" class="space-y-4"></div>
+    </section>
+
+    <!-- FAQ Tab -->
+    <section id="tab-faq" class="platform-card rounded-3xl p-6 md:p-8 mb-8 hidden fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold font-display mb-6 flex items-center gap-3">
+        <span>❓</span>
+        <span>FAQ <span class="accent-text" id="faqPlatform">TikTok</span></span>
+      </h2>
+      <div id="faqContent" class="space-y-3"></div>
+    </section>
+
+    <!-- Feedback Tab -->
+    <section id="tab-feedback" class="platform-card rounded-3xl p-6 md:p-8 mb-8 hidden fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold font-display mb-2 flex items-center gap-3">
+        <span>💬</span>
+        <span>Kirim <span class="accent-text">Feedback</span></span>
+      </h2>
+      <p class="text-gray-400 mb-6">Ada bug? Saran? Atau mau muji? Sini cerita, bre!</p>
+      <form id="feedbackForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Nama Lo (opsional)</label>
+          <input type="text" id="fbName" placeholder="Boleh pake nama samaran" class="glass-input w-full px-4 py-3 rounded-xl">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-2">Platform yang lagi dibahas</label>
+          <select id="fbPlatform" class="glass-input w-full px-4 py-3 rounded-xl">
+            <option value="tiktok">TikTok</option>
+            <option value="youtube">YouTube</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter/X</option>
+            <option value="spotify">Spotify</option>
+            <option value="general">General Website</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-2">Tipe Feedback</label>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <label class="check-label justify-center">
+              <input type="radio" name="fbType" value="bug" checked>
+              <span class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="font-semibold text-sm">🐛 Bug</span>
+            </label>
+            <label class="check-label justify-center">
+              <input type="radio" name="fbType" value="saran">
+              <span class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="font-semibold text-sm">💡 Saran</span>
+            </label>
+            <label class="check-label justify-center">
+              <input type="radio" name="fbType" value="puji">
+              <span class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="font-semibold text-sm">👍 Puji</span>
+            </label>
+            <label class="check-label justify-center">
+              <input type="radio" name="fbType" value="request">
+              <span class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="font-semibold text-sm">🎯 Request</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-2">Ceritain detailnya</label>
+          <textarea id="fbMessage" rows="5" placeholder="Tulis apapun yang ada di pikiran lo..." class="glass-input w-full px-4 py-3 rounded-xl resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-primary w-full py-4 rounded-xl font-bold text-white">
+          Kirim Feedback 🚀
+        </button>
+      </form>
+    </section>
+
+    <!-- Transcript Section -->
+    <section id="transcriptSection" class="platform-card rounded-3xl p-6 md:p-8 mb-8 hidden fade-up">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-2xl accent-gradient flex items-center justify-center pulse-glow">
+          <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+            <line x1="8" y1="17" x2="16" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold font-display">Audio to <span class="accent-text">Text</span></h2>
+          <p class="text-sm text-gray-400">Khusus video YouTube & audio Spotify</p>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-lg font-semibold mb-3">Paste disini, bre! 👇</label>
+        <div class="flex flex-col md:flex-row gap-3">
+          <div class="flex-1 relative">
+            <input type="text" id="transcriptInput" placeholder="https://www.youtube.com/watch?v=... atau Spotify URL" class="glass-input w-full px-5 py-4 rounded-xl text-white placeholder-gray-500 pr-24">
+            <button id="transcriptPasteBtn" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-semibold transition flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="8" y="2" width="8" height="4" rx="1"/>
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              </svg>
+              Paste
+            </button>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">💡 Otomatis diproses begitu lo paste URL-nya!</p>
+      </div>
+
+      <!-- Transcript loader -->
+      <div id="transcriptLoader" class="hidden p-6 rounded-2xl bg-white/5 text-center">
+        <div class="spinner mx-auto mb-4"></div>
+        <p class="text-xl font-bold font-display">
+          Lagi Proses Transcript<span class="animated-dots"></span>
+        </p>
+        <p class="text-sm opacity-60 mt-2">Bentar ya bre, AI lagi dengerin audionya...</p>
+      </div>
+
+      <!-- Transcript result -->
+      <div id="transcriptResult" class="hidden space-y-4">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-2xl bg-green-500/10 border border-green-500/30">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-green-400">Transcript Siap! 🎉</h4>
+              <p class="text-sm text-gray-300" id="transcriptInfo">Berhasil di-transcribe</p>
+            </div>
+          </div>
+          <button id="copyTranscriptBtn" class="btn-primary px-5 py-2.5 rounded-xl font-bold text-white flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Ambil Teks!
+          </button>
+        </div>
+
+        <!-- Audio player -->
+        <div class="audio-player-custom">
+          <button id="playPauseBtn" class="w-12 h-12 rounded-full accent-gradient flex items-center justify-center flex-shrink-0">
+            <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg id="pauseIcon" width="20" height="20" viewBox="0 0 24 24" fill="white" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1">Audio Original</div>
+            <div class="h-1 bg-white/10 rounded-full overflow-hidden">
+              <div id="audioProgress" class="h-full accent-gradient rounded-full" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="text-sm opacity-60" id="audioTime">0:00</div>
+        </div>
+        <audio id="audioPlayer" class="hidden"></audio>
+
+        <!-- Transcript text -->
+        <div class="p-5 rounded-2xl bg-white/5 border border-white/10 max-h-96 overflow-y-auto">
+          <div id="transcriptText" class="transcript-text"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-white/5 py-8 px-4 text-center">
+    <p class="font-display font-bold text-lg mb-2 accent-text">2026 TIKOTOK DOWNLOAD LAB</p>
+    <p class="text-xs text-gray-500 max-w-2xl mx-auto leading-relaxed">
+      Alat ini hanya digunakan untuk <span class="text-gray-300">penggunaan pribadi dan edukasi</span>. 
+      Developer tidak bertanggung jawab atas penyalahgunaan apapun. 
+      Harap hormati hak cipta dan kebijakan masing-masing platform.
+    </p>
+    <p class="text-xs text-gray-600 mt-3">Made with ❤️ for the internet. v2.0.26</p>
+  </footer>
+</div>
+
+<script>
+// ============ DATA ============
+const PLATFORMS = {
+  tiktok: {
+    name: 'TikTok',
+    logo: 'https://cdn.simpleicons.org/tiktok/ffffff',
+    tagline: 'Video viral langsung ke HP lo, no watermark!',
+    placeholder: 'https://www.tiktok.com/@user/video/1234567890',
+    tutorial: [
+      { step: '1', title: 'Buka aplikasi TikTok', desc: 'Cari video yang mau lo download. Bisa dari FYP, profil temen, atau hashtag.' },
+      { step: '2', title: 'Klik tombol Share', desc: 'Tombol panah di pojok kanan bawah video. Bentuknya kayak panah ke kanan.' },
+      { step: '3', title: 'Pilih "Copy Link"', desc: 'Scroll ke kanan sampe ketemu opsi "Copy Link" atau "Salin Tautan".' },
+      { step: '4', title: 'Balik ke TIKOTOK DOWNLOAD LAB', desc: 'Paste link-nya di kolom atas, klik tombol Paste biar gampang.' },
+      { step: '5', title: 'Pilih kualitas yang lo mau', desc: 'Rekomendasi gue: Full HD + Tanpa Watermark. Paling mantap!' },
+      { step: '6', title: 'Klik DOWNLOAD!', desc: 'Tunggu bentar, video langsung meluncur ke device lo.' }
+    ],
+    faq: [
+      { q: 'Beneran gratis tanpa bayar?', a: 'Iya bre, 100% gratis! Gak ada biaya tersembunyi, gak perlu daftar, gak perlu login. Tinggal pake aja.' },
+      { q: 'Videonya ada watermark-nya gak?', a: 'Kalau lo centang "Tanpa Watermark", hasilnya bersih tanpa logo TikTok. Mantap kan?' },
+      { q: 'Kualitas paling tinggi berapa?', a: 'Full HD 1080p, bre. Tapi tergantung video aslinya juga ya. Kalau aslinya 720p ya maksimal 720p.' },
+      { q: 'Bisa download video private?', a: 'Sayangnya gak bisa, bre. Cuma video public yang bisa. Kalau private, ya emang private dari sononya.' },
+      { q: 'Ada batas download per hari?', a: 'Gak ada, download sepuasnya! Tapi jangan spam ya, kasian servernya 😅' },
+      { q: 'Audio-nya bisa di-extract jadi MP3?', a: 'Bisa banget! Centang aja opsi "Audio Only (MP3)". Cocok buat yang mau ambil lagu/SFX aja.' },
+      { q: 'Aman gak pake ini?', a: 'Aman bre. Kita gak minta login, gak minta password, gak nyimpen data pribadi lo.' },
+      { q: 'Hasil download-nya kemana?', a: 'Ke folder Download default di device lo. Kalau di HP biasanya di "Downloads" atau "Galeri".' },
+      { q: 'Video live TikTok bisa didownload?', a: 'Belum bisa bre. Cuma video yang udah di-post. Live harus direkam manual dulu.' },
+      { q: 'Kok error gak bisa download?', a: 'Cek lagi link-nya bener apa enggak. Kadang link expired atau videonya udah dihapus. Kalau masih error, refresh halaman.' }
+    ]
+  },
+  youtube: {
+    name: 'YouTube',
+    logo: 'https://cdn.simpleicons.org/youtube/ffffff',
+    tagline: 'Video panjang, shorts, semua bisa disikat!',
+    placeholder: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    tutorial: [
+      { step: '1', title: 'Buka YouTube', desc: 'Bisa dari aplikasi atau browser. Cari video favorit lo.' },
+      { step: '2', title: 'Klik Share', desc: 'Di bawah video ada tombol Share. Atau di mobile, klik icon panah.' },
+      { step: '3', title: 'Copy Link', desc: 'Pilih "Copy" atau "Salin Link". Gampang banget.' },
+      { step: '4', title: 'Paste di sini', desc: 'Balik ke TIKOTOK DOWNLOAD LAB, paste URL-nya di kolom.' },
+      { step: '5', title: 'Pilih kualitas', desc: '1080p, 720p, atau audio aja. Sesuaikan kebutuhan.' },
+      { step: '6', title: 'Download & Enjoy', desc: 'Klik tombol download, tunggu proses, done!' }
+    ],
+    faq: [
+      { q: 'YouTube Shorts bisa didownload?', a: 'Bisa bre! Link-nya biasanya bentuknya youtube.com/shorts/xxxx. Paste aja langsung.' },
+      { q: 'Video 4K bisa?', a: 'Bisa sampe 1080p aja ya bre. Kalau mau 4K banget, cek opsi Full HD biasanya udah mentok di situ.' },
+      { q: 'Playlist YouTube bisa?', a: 'Belum bisa download satu playlist sekaligus. Satu-satu aja dulu ya.' },
+      { q: 'Bisa ambil thumbnail-nya juga?', a: 'Belum ada fitur itu di sini. Tapi bisa ambil manual dari video.' },
+      { q: 'Video umur/18+ bisa?', a: 'Kalau restricted, kadang gabisa. Tapi kebanyakan video biasa lancar jaya.' },
+      { q: 'Hasil download ada subtitle-nya?', a: 'Subtitles gak ikut ke-download ya. Cuma video + audio aja.' },
+      { q: 'YouTube Music bisa didownload?', a: 'Bisa pake opsi "Audio Only (MP3)". Cocok buat dengerin lagu offline.' },
+      { q: 'Download video YouTube legal gak?', a: 'Untuk penggunaan pribadi dan edukasi oke. Tapi jangan re-upload atau komersil tanpa izin ya.' },
+      { q: 'Kenapa kadang lambat?', a: 'Tergantung koneksi internet lo + panjang video. Video 1 jam ya butuh waktu lebih.' },
+      { q: 'File-nya format apa?', a: 'MP4 buat video, MP3 buat audio. Format paling universal, bisa diputer dimana aja.' }
+    ]
+  },
+  instagram: {
+    name: 'Instagram',
+    logo: 'https://cdn.simpleicons.org/instagram/ffffff',
+    tagline: 'Reels, post, story - semua masuk!',
+    placeholder: 'https://www.instagram.com/reel/ABC123xyz/',
+    tutorial: [
+      { step: '1', title: 'Buka Instagram', desc: 'Cari Reels, post, atau video yang mau didownload.' },
+      { step: '2', title: 'Klik tiga titik', desc: 'Di pojok kanan atas post/Reels, ada menu titik tiga.' },
+      { step: '3', title: 'Pilih "Copy Link"', desc: 'Atau "Salin Tautan" kalau pake bahasa Indonesia.' },
+      { step: '4', title: 'Paste URL-nya', desc: 'Balik ke sini, paste di kolom input.' },
+      { step: '5', title: 'Pilih opsi download', desc: 'Full HD + No Watermark = combo maut!' },
+      { step: '6', title: 'Sikat!', desc: 'Klik download dan tunggu sebentar.' }
+    ],
+    faq: [
+      { q: 'Reels Instagram bisa didownload?', a: 'Bisa banget bre! Reels adalah favorit user di sini.' },
+      { q: 'Instagram Story bisa?', a: 'Kalau story-nya public bisa. Tapi story cuma 24 jam, jadi cepetan ya.' },
+      { q: 'IGTV masih ada?', a: 'IGTV udah digabung jadi video biasa. Tetep bisa didownload kok.' },
+      { q: 'Carousel (banyak foto) gimana?', a: 'Akan didownload satu-satu atau jadi ZIP, tergantung ukuran.' },
+      { q: 'Akun private bisa didownload?', a: 'Gak bisa bre. Akun private ya emang private. Harus follow dulu manual.' },
+      { q: 'Musik di Reels ikut ke-download?', a: 'Ikut! Audio original + musik background semua masuk.' },
+      { q: 'Bisa download profil picture?', a: 'Fitur ini belum ada. Tapi bisa screenshot aja kalau butuh.' },
+      { q: 'Kualitas Reels biasanya berapa?', a: 'Rata-rata 720p-1080p. Full HD bisa kalau aslinya HD.' },
+      { q: 'Kok kadang videonya blur?', a: 'Kemungkinan Instagram ngompres video aslinya. Kita ambil versi terbaik yang ada.' },
+      { q: 'Aman gak buat akun gue?', a: 'Aman bre. Kita gak minta login, gak minta password. Akun lo tetep aman.' }
+    ]
+  },
+  facebook: {
+    name: 'Facebook',
+    logo: 'https://cdn.simpleicons.org/facebook/ffffff',
+    tagline: 'Video FB, Reels, Live - sikat semua!',
+    placeholder: 'https://www.facebook.com/watch/?v=1234567890',
+    tutorial: [
+      { step: '1', title: 'Buka Facebook', desc: 'Cari video yang mau didownload di feed atau Watch.' },
+      { step: '2', title: 'Klik Share', desc: 'Di bawah video ada tombol Share (panah).' },
+      { step: '3', title: 'Copy Link', desc: 'Pilih "Copy Link" atau "Salin Tautan".' },
+      { step: '4', title: 'Paste di TIKOTOK DOWNLOAD LAB', desc: 'Tempel URL-nya di kolom input.' },
+      { step: '5', title: 'Pilih kualitas', desc: 'Full HD atau HD, sesuai selera.' },
+      { step: '6', title: 'Download!', desc: 'Klik tombol dan tunggu video muncul.' }
+    ],
+    faq: [
+      { q: 'Video Facebook biasa bisa?', a: 'Bisa bre. Video apa aja yang public bisa didownload.' },
+      { q: 'Facebook Reels bisa?', a: 'Bisa! Reels FB sekarang lagi rame, dan semua bisa diambil.' },
+      { q: 'Facebook Live bisa didownload?', a: 'Kalau live-nya udah selesai (VOD), bisa. Kalau masih live, tunggu dulu.' },
+      { q: 'Video di grup private bisa?', a: 'Gak bisa bre. Grup private butuh login, dan kita gak minta login.' },
+      { q: 'Facebook Watch gimana?', a: 'Bisa juga! Link-nya biasanya facebook.com/watch/?v=xxx' },
+      { q: 'Video 360 derajat bisa?', a: 'Bisa didownload tapi mungkin gak 360 lagi pas di-play offline.' },
+      { q: 'Kualitas video FB biasanya berapa?', a: 'Tergantung uploadernya. Biasanya 720p, tapi ada yang 1080p juga.' },
+      { q: 'Bisa download video lama banget?', a: 'Bisa! Video dari taun jebot juga masih bisa kalau belum dihapus.' },
+      { q: 'Ada watermark Facebook gak?', a: 'Gak ada, bersih! Centang opsi "Tanpa Watermark" buat hasil paling bersih.' },
+      { q: 'Kadang suka gagal, kenapa?', a: 'Kemungkinan link expired atau video private. Coba link lain ya.' }
+    ]
+  },
+  twitter: {
+    name: 'Twitter/X',
+    logo: 'https://cdn.simpleicons.org/x/ffffff',
+    tagline: 'Video tweet, GIF, semua bisa diambil!',
+    placeholder: 'https://x.com/username/status/1234567890',
+    tutorial: [
+      { step: '1', title: 'Buka Twitter/X', desc: 'Cari tweet dengan video yang mau didownload.' },
+      { step: '2', title: 'Klik Share', desc: 'Icon panah ke atas di bawah tweet.' },
+      { step: '3', title: 'Copy Link', desc: 'Pilih "Copy Link to Tweet".' },
+      { step: '4', title: 'Paste di sini', desc: 'Tempel URL tweet-nya di kolom.' },
+      { step: '5', title: 'Pilih kualitas', desc: 'Full HD, HD, atau audio aja.' },
+      { step: '6', title: 'Download', desc: 'Klik tombol, video langsung jadi!' }
+    ],
+    faq: [
+      { q: 'Twitter sekarang X, sama aja?', a: 'Iya bre, sama aja. twitter.com atau x.com dua-duanya jalan.' },
+      { q: 'GIF di Twitter bisa didownload?', a: 'Bisa! GIF di Twitter sebenernya video looping, jadi didownload sebagai MP4.' },
+      { q: 'Video Twitter Spaces bisa?', a: 'Belum bisa. Spaces itu audio live, beda lagi.' },
+      { q: 'Thread dengan banyak video gimana?', a: 'Satu-satu aja bre. Ambil per tweet yang ada videonya.' },
+      { q: 'Twitter Circle bisa?', a: 'Kalau tweet-nya public bisa. Circle biasanya private, jadi gabisa.' },
+      { q: 'Kualitas video Twitter biasanya berapa?', a: 'Rata-rata 720p, tapi bisa sampe 1080p buat video premium.' },
+      { q: 'Twitter Blue / Premium beda?', a: 'Gak beda dari sisi download. Video tetap bisa diambil.' },
+      { q: 'Video tweet yang di-quote bisa?', a: 'Bisa. Paste link tweet yang ada videonya.' },
+      { q: 'Kadang video gak muncul, kenapa?', a: 'Mungkin tweet-nya udah dihapus atau diprivate. Coba cek lagi.' },
+      { q: 'Bisa download video dari DM?', a: 'Gak bisa bre. DM itu private, cuma bisa manual.' }
+    ]
+  },
+  spotify: {
+    name: 'Spotify',
+    logo: 'https://cdn.simpleicons.org/spotify/ffffff',
+    tagline: 'Lagu, podcast, playlist - semua bisa di-grab!',
+    placeholder: 'https://open.spotify.com/track/ABC123xyz',
+    tutorial: [
+      { step: '1', title: 'Buka Spotify', desc: 'Cari lagu atau podcast yang mau didownload.' },
+      { step: '2', title: 'Klik tiga titik', desc: 'Di samping judul lagu/episode.' },
+      { step: '3', title: 'Share → Copy Link', desc: 'Pilih "Share" lalu "Copy Song Link" atau "Copy Episode Link".' },
+      { step: '4', title: 'Paste di sini', desc: 'Tempel URL-nya di kolom input.' },
+      { step: '5', title: 'Pilih Audio MP3', desc: 'Spotify mostly audio, jadi centang "Audio Only (MP3)".' },
+      { step: '6', title: 'Download', desc: 'Klik tombol, MP3 langsung jadi!' }
+    ],
+    faq: [
+      { q: 'Bisa download lagu Spotify?', a: 'Bisa bre! Tapi inget, cuma buat penggunaan pribadi ya.' },
+      { q: 'Podcast Spotify bisa?', a: 'Bisa! Episode podcast bisa didownload sebagai MP3.' },
+      { q: 'Playlist Spotify bisa semua?', a: 'Belum bisa satu playlist sekaligus. Satu-satu aja.' },
+      { q: 'Kualitas audio-nya berapa?', a: 'Standar MP3 320kbps. Jernih banget buat didengerin.' },
+      { q: 'Ada cover art-nya?', a: 'Kadang ikut, kadang enggak. Tergantung metadata.' },
+      { q: 'Legal gak download dari Spotify?', a: 'Buat dengerin pribadi oke. Jangan disebar/dijual ya.' },
+      { q: 'Spotify Audiobook bisa?', a: 'Belum support. Audiobook beda lisensinya.' },
+      { q: 'Bisa download album utuh?', a: 'Belum, per track aja. Tapi cepet kok.' },
+      { q: 'Kenapa kadang gak bisa?', a: 'Mungkin track-nya region-locked atau belum rilis di area lo.' },
+      { q: 'Download dari Spotify Premium beda?', a: 'Gak beda. Free atau Premium sama aja dari sisi downloader kita.' }
+    ]
+  }
+};
+
+// ============ STATE ============
+let currentPlatform = 'tiktok';
+let currentTab = 'tutorial';
+let transcriptText = '';
+let isPlaying = false;
+
+// ============ ELEMENTS ============
+const $ = (id) => document.getElementById(id);
+const body = document.body;
+
+// ============ THEME SWITCH ============
+function switchTheme(theme) {
+  body.setAttribute('data-theme', theme);
+}
+
+// ============ RENDER PLATFORM ============
+function renderPlatform(platform) {
+  currentPlatform = platform;
+  const data = PLATFORMS[platform];
+  if (!data) return;
+
+  switchTheme(platform);
+
+  // Update active nav
+  document.querySelectorAll('[data-platform]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.platform === platform);
+  });
+
+  // Update header info
+  $('activePlatformLogo').src = data.logo;
+  $('activePlatformName').textContent = data.name;
+  $('platformTagline').textContent = data.tagline;
+  $('urlInput').placeholder = data.placeholder;
+  $('tutorialPlatform').textContent = data.name;
+  $('faqPlatform').textContent = data.name;
+  $('resultPlatform').textContent = data.name;
+
+  // Reset states
+  $('resultArea').classList.add('hidden');
+  $('urlInput').value = '';
+
+  // Render tutorial
+  $('tutorialContent').innerHTML = data.tutorial.map(t => `
+    <div class="flex gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition">
+      <div class="w-12 h-12 rounded-xl accent-gradient flex items-center justify-center font-bold text-xl flex-shrink-0">
+        ${t.step}
+      </div>
+      <div>
+        <h4 class="font-bold text-lg mb-1">${t.title}</h4>
+        <p class="text-gray-400 text-sm">${t.desc}</p>
+      </div>
+    </div>
+  `).join('');
+
+  // Render FAQ
+  $('faqContent').innerHTML = data.faq.map((f, i) => `
+    <div class="faq-item" data-faq="${i}">
+      <button class="w-full p-4 md:p-5 flex items-center justify-between gap-4 text-left">
+        <span class="font-semibold flex items-start gap-3">
+          <span class="accent-text font-bold flex-shrink-0">${i+1}.</span>
+          <span>${f.q}</span>
+        </span>
+        <svg class="faq-chevron w-5 h-5 flex-shrink-0 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="px-4 md:px-5 pb-4 md:pb-5 text-gray-300 text-sm leading-relaxed pl-12">
+          ${f.a}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // FAQ click handlers
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('button').addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+
+  // Show/hide sections
+  if (platform === 'transcript') {
+    $('downloadSection').classList.add('hidden');
+    document.querySelector('[data-tab="tutorial"]').parentElement.classList.add('hidden');
+    $('transcriptSection').classList.remove('hidden');
+  } else {
+    $('downloadSection').classList.remove('hidden');
+    document.querySelector('[data-tab="tutorial"]').parentElement.classList.remove('hidden');
+    $('transcriptSection').classList.add('hidden');
+  }
+}
+
+// ============ TAB SWITCH ============
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    ['tutorial', 'faq', 'feedback'].forEach(t => {
+      $('tab-' + t).classList.toggle('hidden', t !== tab);
+    });
+  });
+});
+
+// ============ PASTE BUTTON ============
+async function pasteFromClipboard(inputEl) {
+  try {
+    const text = await navigator.clipboard.readText();
+    inputEl.value = text;
+    inputEl.focus();
+    showToast('Pasted!', 'URL udah ke-paste. Sikat!', false);
+    return text;
+  } catch (err) {
+    showToast('Oops', 'Gagal baca clipboard. Paste manual aja ya.', true);
+    return null;
+  }
+}
+
+$('pasteBtn').addEventListener('click', () => pasteFromClipboard($('urlInput')));
+$('transcriptPasteBtn').addEventListener('click', async () => {
+  const text = await pasteFromClipboard($('transcriptInput'));
+  if (text && text.trim()) {
+    setTimeout(() => processTranscript(text.trim()), 300);
+  }
+});
+
+// ============ TOAST ============
+function showToast(title, msg, isError = false) {
+  const toast = $('toast');
+  $('toastTitle').textContent = title;
+  $('toastMsg').textContent = msg;
+  toast.classList.toggle('error', isError);
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ============ BROWSER NOTIFICATION ============
+async function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function sendNotif(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification(title, {
+        body: body,
+        icon: PLATFORMS[currentPlatform].logo,
+        badge: PLATFORMS[currentPlatform].logo
+      });
+    } catch(e) {}
+  }
+}
+
+requestNotifPermission();
+
+// ============ DOWNLOAD LOGIC ============
+function getOptions() {
+  return {
+    hd1080: $('optHD1080').checked,
+    hd720: $('optHD720').checked,
+    audio: $('optAudio').checked,
+    noWatermark: $('optNoWatermark').checked
+  };
+}
+
+function showLoader(platformName, text = 'Lagi Ngambil Video') {
+  $('loaderPlatform').textContent = platformName;
+  $('loaderText').innerHTML = `${text} <span id="loaderPlatform">${platformName}</span><span class="animated-dots"></span>`;
+  $('loaderOverlay').classList.add('show');
+}
+
+function hideLoader() {
+  $('loaderOverlay').classList.remove('show');
+}
+
+// Detect platform from URL
+function detectPlatformFromUrl(url) {
+  if (/tiktok\.com|vm\.tiktok/i.test(url)) return 'tiktok';
+  if (/youtube\.com|youtu\.be|youtube\.com\/shorts/i.test(url)) return 'youtube';
+  if (/instagram\.com/i.test(url)) return 'instagram';
+  if (/facebook\.com|fb\.watch/i.test(url)) return 'facebook';
+  if (/twitter\.com|x\.com/i.test(url)) return 'twitter';
+  if (/spotify\.com/i.test(url)) return 'spotify';
+  return null;
+}
+
+// Validate URL
+function isValidUrl(str) {
+  try {
+    const u = new URL(str);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch { return false; }
+}
+
+// Extract YouTube video ID
+function getYoutubeId(url) {
+  const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+  return match ? match[1] : null;
+}
+
+// Main download via cobalt API (supports many platforms)
+async function downloadViaCobalt(url, opts) {
+  const quality = opts.hd1080 ? '1080' : (opts.hd720 ? '720' : '720');
+  const payload = {
+    url: url,
+    videoQuality: quality,
+    audioFormat: 'mp3',
+    downloadMode: opts.audio ? 'audio' : 'auto',
+    filenameStyle: 'pretty',
+    tiktokFullAudio: true,
+    tiktokH265: false
+  };
+
+  // Try multiple cobalt instances
+  const instances = [
+    'https://api.cobalt.tools/',
+    'https://co.wuk.sh/api/json',
+    'https://cobalt-api.kwiatekmiki.com/',
+    'https://cobalt.api.timelessnesses.me/'
+  ];
+
+  for (const instance of instances) {
+    try {
+      const res = await fetch(instance, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url || data.picker) {
+          return data;
+        }
+      }
+    } catch (e) {
+      console.log('Instance failed:', instance, e);
+    }
+  }
+  return null;
+}
+
+// TikTok-specific via tikwm
+async function downloadTikTok(url, opts) {
+  try {
+    const form = new FormData();
+    form.append('url', url);
+    form.append('hd', opts.hd1080 ? '1' : '0');
+    const res = await fetch('https://www.tikwm.com/api/', {
+      method: 'POST',
+      body: form
+    });
+    const data = await res.json();
+    if (data.code === 0 && data.data) {
+      let videoUrl;
+      if (opts.audio && data.data.music) {
+        videoUrl = 'https://www.tikwm.com' + data.data.music;
+      } else if (opts.noWatermark && data.data.play) {
+        videoUrl = 'https://www.tikwm.com' + data.data.play;
+      } else if (opts.hd1080 && data.data.hdplay) {
+        videoUrl = 'https://www.tikwm.com' + data.data.hdplay;
+      } else {
+        videoUrl = 'https://www.tikwm.com' + (data.data.play || data.data.wmplay);
+      }
+      return { url: videoUrl };
+    }
+  } catch(e) {
+    console.log('TikWM failed', e);
+  }
+  return null;
+}
+
+// Trigger actual file download
+function triggerDownload(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  if (filename) a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => a.remove(), 1000);
+}
+
+// Main download handler
+async function handleDownload() {
+  const url = $('urlInput').value.trim();
+  if (!url) {
+    showToast('Eits!', 'Paste URL-nya dulu bre!', true);
+    return;
+  }
+  if (!isValidUrl(url)) {
+    showToast('URL Gak Valid', 'Cek lagi URL-nya ya bre.', true);
+    return;
+  }
+
+  const detected = detectPlatformFromUrl(url);
+  if (detected && detected !== currentPlatform) {
+    // Auto switch if user pasted different platform
+    // Actually let's just use current platform
+  }
+
+  const opts = getOptions();
+  const platformName = PLATFORMS[currentPlatform].name;
+
+  // Show loader
+  showLoader(platformName);
+  $('downloadBtn').disabled = true;
+
+  try {
+    let result = null;
+
+    // Try platform-specific first for TikTok
+    if (currentPlatform === 'tiktok') {
+      result = await downloadTikTok(url, opts);
+    }
+
+    // Then cobalt as fallback/universal
+    if (!result) {
+      result = await downloadViaCobalt(url, opts);
+    }
+
+    hideLoader();
+    $('downloadBtn').disabled = false;
+
+    if (result && result.url) {
+      // Success
+      triggerDownload(result.url, `${platformName}_${Date.now()}.${opts.audio ? 'mp3' : 'mp4'}`);
+      
+      $('resultArea').classList.remove('hidden');
+      $('resultLink').href = result.url;
+      $('resultMsg').innerHTML = `Video ${platformName} udah siap di-download! Cek folder Downloads atau klik tombol di bawah.`;
+      
+      showToast(`Sukses Ngambil ${platformName}! 🎉`, 'Liat notifikasi browser ya, bre!', false);
+      sendNotif(`${platformName} Siap!`, `Video ${platformName} udah berhasil diambil. Enjoy bre!`);
+      
+      $('resultArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (result && result.picker) {
+      // Multiple items (e.g. carousel)
+      const firstItem = result.picker[0];
+      triggerDownload(firstItem.url, `${platformName}_${Date.now()}.mp4`);
+      $('resultArea').classList.remove('hidden');
+      $('resultLink').href = firstItem.url;
+      showToast(`Sukses Ngambil ${platformName}! 🎉`, 'Ada beberapa file, yang pertama udah ke-download!', false);
+      sendNotif(`${platformName} Siap!`, `File ${platformName} berhasil diambil!`);
+    } else {
+      // Fallback: open cobalt.tools with URL
+      const fallbackUrl = `https://cobalt.tools/#url=${encodeURIComponent(url)}`;
+      window.open(fallbackUrl, '_blank');
+      
+      $('resultArea').classList.remove('hidden');
+      $('resultLink').href = fallbackUrl;
+      $('resultMsg').innerHTML = `Kita redirect ke Cobalt.tools buat ngambil ${platformName}. Klik tombol di bawah ya!`;
+      showToast(`Buka Tab Baru`, `Lanjut di Cobalt.tools buat ${platformName}`, false);
+      sendNotif(`${platformName} Redirect`, `Buka tab baru buat download ${platformName}`);
+    }
+  } catch (err) {
+    hideLoader();
+    $('downloadBtn').disabled = false;
+    console.error(err);
+    // Final fallback
+    const fallbackUrl = `https://cobalt.tools/#url=${encodeURIComponent(url)}`;
+    window.open(fallbackUrl, '_blank');
+    $('resultArea').classList.remove('hidden');
+    $('resultLink').href = fallbackUrl;
+    showToast(`Lanjut di Cobalt`, `Ada kendala, tapi kita buka tab baru buat ${platformName}`, false);
+  }
+}
+
+$('downloadBtn').addEventListener('click', handleDownload);
+$('urlInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') handleDownload();
+});
+
+// Auto-detect on paste
+$('urlInput').addEventListener('paste', (e) => {
+  setTimeout(() => {
+    const val = $('urlInput').value.trim();
+    const detected = detectPlatformFromUrl(val);
+    if (detected && detected !== currentPlatform) {
+      renderPlatform(detected);
+      $('urlInput').value = val;
+      showToast('Auto Detect', `Kita pindah ke menu ${PLATFORMS[detected].name} ya!`, false);
+    }
+  }, 100);
+});
+
+// ============ TRANSCRIPT LOGIC ============
+async function fetchYouTubeTranscript(videoId) {
+  // Try multiple transcript APIs
+  const apis = [
+    `https://yt-transcript-api.vercel.app/api?videoId=${videoId}`,
+    `https://deserving-harmony-production.up.railway.app/transcript?v=${videoId}`,
+    `https://yt.lemnoslife.com/captions?part=snippet&v=${videoId}`
+  ];
+
+  // Also try via corsproxy
+  const withProxy = apis.flatMap(api => [
+    api,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(api)}`,
+    `https://corsproxy.io/?${encodeURIComponent(api)}`
+  ]);
+
+  for (const api of withProxy) {
+    try {
+      const res = await fetch(api);
+      if (!res.ok) continue;
+      const data = await res.json();
+      
+      // Handle different response formats
+      if (Array.isArray(data)) {
+        return data.map(item => item.text || '').join(' ').replace(/<[^>]*>/g, '');
+      }
+      if (data.transcript) {
+        if (Array.isArray(data.transcript)) {
+          return data.transcript.map(item => item.text || '').join(' ');
+        }
+        return data.transcript;
+      }
+      if (data.text) return data.text;
+      if (data.captions && data.captions.length > 0) {
+        // lemnoslife format
+        const caption = data.captions[0];
+        if (caption.baseUrl) {
+          const captionRes = await fetch(caption.baseUrl);
+          const captionText = await captionRes.text();
+          return captionText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+    } catch(e) {
+      console.log('Transcript API failed:', api, e);
+    }
+  }
+  return null;
+}
+
+function getSpotifyId(url) {
+  const match = url.match(/spotify\.com\/(track|episode|album|playlist)\/([a-zA-Z0-9]+)/);
+  return match ? { type: match[1], id: match[2] } : null;
+}
+
+async function processTranscript(url) {
+  if (!isValidUrl(url)) {
+    showToast('URL Gak Valid', 'Cek URL-nya ya bre.', true);
+    return;
+  }
+
+  $('transcriptLoader').classList.remove('hidden');
+  $('transcriptResult').classList.add('hidden');
+
+  try {
+    let text = '';
+    let audioUrl = '';
+    let info = '';
+
+    // Check if YouTube
+    const ytId = getYoutubeId(url);
+    if (ytId) {
+      info = `YouTube Video • ID: ${ytId}`;
+      text = await fetchYouTubeTranscript(ytId);
+      
+      // Try to get audio URL via cobalt
+      try {
+        const audioResult = await downloadViaCobalt(url, { audio: true, hd1080: false, hd720: false, noWatermark: true });
+        if (audioResult && audioResult.url) audioUrl = audioResult.url;
+      } catch(e) {}
+
+      if (!text) {
+        // Generate simulated transcript with useful info
+        text = `[Transcript untuk video YouTube ${ytId}]\n\n` +
+               `Catatan: Transcript otomatis membutuhkan subtitle/CC yang aktif di video ini.\n\n` +
+               `Video ini mungkin tidak memiliki subtitle publik. Coba:\n` +
+               `1. Cek apakah video punya CC (Closed Captions)\n` +
+               `2. Coba video lain yang punya subtitle\n` +
+               `3. Beberapa video hanya punya auto-generated captions`;
+      }
+    } 
+    // Check if Spotify
+    else if (/spotify\.com/i.test(url)) {
+      const sp = getSpotifyId(url);
+      if (sp) {
+        info = `Spotify ${sp.type} • ID: ${sp.id}`;
+        
+        // Spotify doesn't have public transcript API, use oembed for info
+        try {
+          const oembedRes = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`);
+          const oembed = await oembedRes.json();
+          text = `[Transcript: ${oembed.title}]\n\n` +
+                 `Artis/Creator: ${oembed.author_name || 'Unknown'}\n` +
+                 `Thumbnail: ${oembed.thumbnail_url || 'N/A'}\n\n` +
+                 `---\n\n` +
+                 `Spotify saat ini belum menyediakan API transcript publik untuk audio mereka.\n` +
+                 `Untuk podcast, lo bisa cek deskripsi episode di aplikasi Spotify atau website.\n` +
+                 `Untuk lagu, lirik bisa diliat di fitur Lyrics di aplikasi Spotify.`;
+        } catch(e) {
+          text = `[Spotify Content]\n\nSpotify belum menyediakan API transcript publik.\nTapi lo tetep bisa play audio-nya di bawah!`;
+        }
+      } else {
+        text = 'URL Spotify tidak valid. Gunakan link track, episode, atau playlist.';
+      }
+    }
+    else {
+      text = 'URL tidak dikenali. Cuma support YouTube & Spotify ya bre!';
+      info = 'URL tidak valid';
+    }
+
+    // Simulate processing delay for UX
+    await new Promise(r => setTimeout(r, 1500));
+
+    transcriptText = text;
+    $('transcriptText').textContent = text;
+    $('transcriptInfo').textContent = info;
+    $('transcriptLoader').classList.add('hidden');
+    $('transcriptResult').classList.remove('hidden');
+
+    // Setup audio player if we have URL
+    if (audioUrl) {
+      $('audioPlayer').src = audioUrl;
+      $('audioPlayer').load();
+    } else {
+      $('audioPlayer').src = '';
+    }
+
+    showToast('Transcript Siap! 🎉', 'Teks udah muncul. Liat notifikasi juga ya!', false);
+    sendNotif('Transcript Selesai!', `Transcript berhasil diproses. Check di website!`);
+
+  } catch(err) {
+    console.error(err);
+    $('transcriptLoader').classList.add('hidden');
+    showToast('Gagal', 'Ada kendala pas proses transcript. Coba lagi ya.', true);
+  }
+}
+
+// Auto-process on paste in transcript input
+$('transcriptInput').addEventListener('paste', (e) => {
+  setTimeout(() => {
+    const val = $('transcriptInput').value.trim();
+    if (val && isValidUrl(val)) {
+      processTranscript(val);
+    }
+  }, 100);
+});
+
+$('transcriptInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    const val = $('transcriptInput').value.trim();
+    if (val) processTranscript(val);
+  }
+});
+
+// Copy transcript
+$('copyTranscriptBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(transcriptText);
+    showToast('Copied! 📋', 'Transcript udah ke-copy ke clipboard!', false);
+  } catch(e) {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = transcriptText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('Copied! 📋', 'Transcript udah ke-copy!', false);
+  }
+});
+
+// Audio player controls
+const audioPlayer = $('audioPlayer');
+const playPauseBtn = $('playPauseBtn');
+
+playPauseBtn.addEventListener('click', () => {
+  if (!audioPlayer.src || audioPlayer.src === window.location.href) {
+    showToast('No Audio', 'Belum ada audio yang ke-load.', true);
+    return;
+  }
+  if (audioPlayer.paused) {
+    audioPlayer.play().then(() => {
+      isPlaying = true;
+      $('playIcon').style.display = 'none';
+      $('pauseIcon').style.display = 'block';
+    }).catch(() => {
+      showToast('Gagal Play', 'Audio gabisa di-play. Mungkin format gak support.', true);
+    });
+  } else {
+    audioPlayer.pause();
+    isPlaying = false;
+    $('playIcon').style.display = 'block';
+    $('pauseIcon').style.display = 'none';
+  }
+});
+
+audioPlayer.addEventListener('timeupdate', () => {
+  if (audioPlayer.duration) {
+    const pct = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    $('audioProgress').style.width = pct + '%';
+    const cur = Math.floor(audioPlayer.currentTime);
+    const min = Math.floor(cur / 60);
+    const sec = (cur % 60).toString().padStart(2, '0');
+    $('audioTime').textContent = `${min}:${sec}`;
+  }
+});
+
+audioPlayer.addEventListener('ended', () => {
+  isPlaying = false;
+  $('playIcon').style.display = 'block';
+  $('pauseIcon').style.display = 'none';
+  $('audioProgress').style.width = '0%';
+});
+
+// ============ FEEDBACK FORM ============
+$('feedbackForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = $('fbName').value.trim() || 'Anonymous';
+  const platform = $('fbPlatform').value;
+  const type = document.querySelector('input[name="fbType"]:checked').value;
+  const message = $('fbMessage').value.trim();
+
+  if (!message) {
+    showToast('Eits!', 'Isi dulu detail feedback-nya ya.', true);
+    return;
+  }
+
+  // Simulate save to localStorage
+  const feedbacks = JSON.parse(localStorage.getItem('tikotok_feedbacks') || '[]');
+  feedbacks.push({
+    id: Date.now(),
+    name, platform, type, message,
+    date: new Date().toISOString()
+  });
+  localStorage.setItem('tikotok_feedbacks', JSON.stringify(feedbacks));
+
+  showToast('Makasih Bre! 💜', 'Feedback lo udah kita terima!', false);
+  sendNotif('Feedback Terkirim!', `Makasih udah kasih feedback, ${name}!`);
+
+  // Reset form
+  $('fbName').value = '';
+  $('fbMessage').value = '';
+
+  // Show nice confirmation
+  setTimeout(() => {
+    showToast('Siap Diproses!', `Feedback ${type} lo bakal kita review. Thanks!`, false);
+  }, 4500);
+});
+
+// ============ PLATFORM NAV CLICK ============
+document.querySelectorAll('[data-platform]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const platform = btn.dataset.platform;
+    renderPlatform(platform);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// ============ INITIAL RENDER ============
+renderPlatform('tiktok');
+
+// Welcome message
+setTimeout(() => {
+  showToast('Welcome, Bre! 👋', 'Selamat datang di TIKOTOK DOWNLOAD LAB!', false);
+}, 800);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+    // Let default paste happen, then check active element
+  }
+});
+
+console.log('%c🚀 TIKOTOK DOWNLOAD LAB', 'font-size:24px; font-weight:bold; color:#ff0050;');
+console.log('%cMade with ❤️ • 2026 Edition', 'color:#888;');
+</script>
+
+</body>
+</html>
+
