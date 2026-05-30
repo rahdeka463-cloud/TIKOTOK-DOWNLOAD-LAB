@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIKOTOK DOWNLOAD LAB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-default">
+
+    <header>
+        <h1>TIKOTOK DOWNLOAD LAB</h1>
+        <p class="subtitle">Download dari banyak platform GRATIS CUY!🚀</p>
+    </header>
+
+    <nav class="platform-tabs">
+        <button onclick="changePlatform('tiktok')" class="tab-btn active">TikTok</button>
+        <button onclick="changePlatform('ig')" class="tab-btn">Instagram</button>
+        <button onclick="changePlatform('yt')" class="tab-btn">YouTube</button>
+        <button onclick="changePlatform('transcript')" class="tab-btn transcript-btn">🎤 Transkrip Audio</button>
+        </nav>
+
+    <main>
+        <section id="tiktok-section" class="platform-section active">
+            <h2>TikTok Downloader</h2>
+            <div class="input-area">
+                <label>Paste disini, bre!👇</label>
+                <div class="input-group">
+                    <input type="text" id="url-tiktok" placeholder="https://vt.tiktok.com/...">
+                    <button class="paste-btn" onclick="pasteURL('url-tiktok')">📋 Paste</button>
+                </div>
+            </div>
+
+            <div class="options-area">
+                <label><input type="checkbox" id="opt-fhd-tiktok" checked> Full HD (1080p)</label>
+                <label><input type="checkbox" id="opt-nowm-tiktok" checked> Tanpa Watermark</label>
+                <label><input type="checkbox" id="opt-hd-tiktok"> HD (720p)</label>
+                <label><input type="checkbox" id="opt-mp3-tiktok"> Audio (MP3)</label>
+            </div>
+
+            <button class="download-btn" onclick="startDownload('tiktok', 'TikTok')">Sikat Videonya!</button>
+
+            <div id="loader-tiktok" class="loader-container hidden">
+                <div class="spinner"></div>
+                <p class="loading-text">Lagi Ngambil Video TikTok.....</p>
+            </div>
+            
+            <div id="faq-tiktok" class="faq-area">
+                <h3>FAQ TikTok (Top 3)</h3>
+                <details><summary>1. Beneran tanpa watermark cuy?</summary><p>Yoih bre! Kalo lu centang opsi Tanpa Watermark, video lu bakal bersih kinclong.</p></details>
+                <details><summary>2. Bayar gak nih?</summary><p>Gratis tis tis selamanya buat lo!</p></details>
+                <details><summary>3. Kok error bang?</summary><p>Cek koneksi lu atau pastiin URL-nya beneran video publik ya.</p></details>
+            </div>
+        </section>
+
+        <section id="transcript-section" class="platform-section">
+            <h2>Transkrip YT & Spotify</h2>
+            <div class="input-area">
+                <label>Paste disini, bre!👇</label>
+                <div class="input-group">
+                    <input type="text" id="url-transcript" placeholder="Link YouTube/Spotify podcast...">
+                    <button class="paste-btn" onclick="pasteURL('url-transcript')">📋 Paste</button>
+                </div>
+            </div>
+
+            <button class="download-btn" onclick="startTranscript()">Ubah ke Teks!</button>
+
+            <div id="loader-transcript" class="loader-container hidden">
+                <div class="spinner"></div>
+                <p class="loading-text">Lagi Proses Transcript.....</p>
+            </div>
+
+            <div id="result-transcript" class="result-area hidden">
+                <div class="audio-controls">
+                    <button id="play-pause-btn" onclick="toggleAudio()">▶️ Play Audio Asli</button>
+                </div>
+                <textarea id="transcript-text" readonly></textarea>
+                <button class="copy-btn" onclick="copyTranscript()">Ambil Teks!</button>
+            </div>
+        </section>
+        
+        <section class="general-section">
+            <details class="feedback-details">
+                <summary>Kirim Feedback / Lapor Bug 🐛</summary>
+                <textarea placeholder="Ceritain keluh kesah lu soal web ini bre..."></textarea>
+                <button>Kirim Curhatan</button>
+            </details>
+        </section>
+    </main>
+
+    <footer>
+        <p class="subtle-text">2026 TIKOTOK DOWNLOAD LAB</p>
+        <p class="disclaimer">Alat ini hanya digunakan untuk penggunaan pribadi dan edukasi. Developer tidak bertanggung jawab atas penyalahgunaan apapun. Harap hormati hak cipta dan kebijakan masing-masing platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
