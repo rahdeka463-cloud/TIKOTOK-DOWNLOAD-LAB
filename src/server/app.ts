@@ -7,161 +7,220 @@ import os from "os";
 import { GoogleGenAI } from "@google/genai";
 
 const app = express();
+const cache = new Map<string, { url: string, expiry: number }>();
+const CACHE_TTL = 1000 * 60 * 60; // 1 jam
+
+function getCache(key: string) {
+  const item = cache.get(key);
+  if (item && item.expiry > Date.now()) return item.url;
+  if (item) cache.delete(key);
+  return null;
+}
+
+function setCache(key: string, url: string) {
+  if (url) cache.set(key, { url, expiry: Date.now() + CACHE_TTL });
+}
 
 app.use(cors());
 app.use(express.json());
 
-async function resolveMediaUrl(url: string, isAudio: boolean) {
-  let streamUrl = "";
-  let cleanUrl = url.split('?')[0];
-
-  // Try TikTok using tikwm natively if it looks like tiktok
-  if (url.includes('tiktok.com')) {
-    try {
-      const tikwmRes = await axios.post('https://www.tikwm.com/api/', { url: url, count: 12, cursor: 0, web: 1, hd: 1 });
-      if (tikwmRes.data && tikwmRes.data.data) {
-        const data = tikwmRes.data.data;
-        streamUrl = isAudio ? `https://www.tikwm.com${data.music}` : `https://www.tikwm.com${data.hdplay || data.play}`;
-      }
-    } catch(e) {}
+async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
+  const cacheKey = `${isAudio ? 'A' : 'V'}:${url}`;
+  const cached = getCache(cacheKey);
+  if (cached) {
+    console.log(`[Cache Hit] ${cacheKey}`);
+    return cached;
   }
 
-  // Try FB
-  if (!streamUrl && (url.includes('facebook.com') || url.includes('fb.watch'))) {
-    try {
-      const fbRes = await axios.get(`https://api.siputzx.my.id/api/d/facebook?url=${url}`);
-      if (fbRes.data?.data?.downloads?.length > 0) {
-        const downloads = fbRes.data.data.downloads;
-        if (isAudio) streamUrl = downloads[downloads.length - 1].url;
-        else {
-          const hd = downloads.find((d: any) => d.quality === 'HD' || d.resolution === '720p (HD)');
-          streamUrl = hd ? hd.url : downloads[0].url;
+  let resultUrl = "";
+  const lowerUrl = url.toLowerCase();
+
+  // 1. TikTok
+  if (lowerUrl.includes('tiktok.com')) {
+    const ttApis = [
+      async () => {
+        const res = await axios.post('https://www.tikwm.com/api/', { url: url, count: 12, cursor: 0, web: 1, hd: 1 }, { timeout: 8000 });
+        if (res.data?.data) {
+          const d = res.data.data;
+          return isAudio ? `https://www.tikwm.com${d.music}` : `https://www.tikwm.com${d.hdplay || d.play}`;
+        }
+      },
+      async () => {
+        const res = await axios.get(`https://api.siputzx.my.id/api/d/tiktok?url=${url}`, { timeout: 8000 });
+        if (res.data?.data) {
+          return isAudio ? res.data.data.music : (res.data.data.hdplay || res.data.data.play);
         }
       }
-    } catch(e) {}
+    ];
+    for (const api of ttApis) {
+      try {
+        resultUrl = await api();
+        if (resultUrl) {
+          setCache(cacheKey, resultUrl);
+          return resultUrl;
+        }
+      } catch (e) {}
+    }
+  }
+
+  // 2. Instagram
+  if (lowerUrl.includes('instagram.com')) {
+    const igApis = [
+      async () => {
+        const res = await axios.get(`https://api.siputzx.my.id/api/d/instagram?url=${url}`, { timeout: 8000 });
+        if (res.data?.data?.length > 0) return res.data.data[0].url || res.data.data[0].downloadUrl;
+      },
+      async () => {
+        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/igdown?url=${url}&apikey=p825s07w`, { timeout: 8000 });
+        return res.data?.result?.[0]?.url || res.data?.result?.url;
+      }
+    ];
+    for (const api of igApis) {
+      try {
+        resultUrl = await api();
+        if (resultUrl) {
+          setCache(cacheKey, resultUrl);
+          return resultUrl;
+        }
+      } catch (e) {}
+    }
+  }
+
+  // 3. Twitter / X
+  if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) {
+    const xApis = [
+      async () => {
+        const res = await axios.get(`https://api.siputzx.my.id/api/d/twitter?url=${url}`, { timeout: 8000 });
+        if (res.data?.data?.url) return res.data.data.url;
+        if (res.data?.data?.media?.length > 0) {
+            const media = res.data.data.media.reverse().find((m: any) => m.type === 'video' || m.type === 'animated_gif' || m.url);
+            return media?.url || res.data.data.media[0].url;
+        }
+      },
+      async () => {
+        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/twitter?url=${url}&apikey=p825s07w`, { timeout: 8000 });
+        return res.data?.result?.[0]?.url || res.data?.result?.url || res.data?.result?.video;
+      }
+    ];
+
+    for (const api of xApis) {
+      try {
+        resultUrl = await api();
+        if (resultUrl) {
+          setCache(cacheKey, resultUrl);
+          return resultUrl;
+        }
+      } catch (e) {}
+    }
+  }
+
+  // 4. Facebook
+  if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.watch')) {
+    const fbApis = [
+      async () => {
+        const res = await axios.get(`https://api.siputzx.my.id/api/d/facebook?url=${url}`, { timeout: 8000 });
+        if (res.data?.data?.downloads?.length > 0) {
+          const downloads = res.data.data.downloads;
+          return isAudio ? downloads[downloads.length - 1].url : (downloads.find((d: any) => d.quality === 'HD') || downloads[0]).url;
+        }
+      },
+      async () => {
+        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/fbdown?url=${url}&apikey=p825s07w`, { timeout: 8000 });
+        return res.data?.result?.url || res.data?.result?.sd;
+      }
+    ];
+
+    for (const api of fbApis) {
+      try {
+        resultUrl = await api();
+        if (resultUrl) {
+          setCache(cacheKey, resultUrl);
+          return resultUrl;
+        }
+      } catch (e) {}
+    }
   }
   
-  // Try Spotify
-  if (!streamUrl && url.includes('spotify.com')) {
-    let queryTitle = "";
+  // 5. Spotify - Targeted Search instead of slow AI Meta
+  if (lowerUrl.includes('spotify.com')) {
+    const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+    const query = trackIdMatch ? `Spotify Track ${trackIdMatch[1]}` : "Spotify Track";
     
-    // Attempt Gemini-powered metadata lookup
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey) {
-      try {
-        const ai = new GoogleGenAI({ 
-          apiKey,
-          httpOptions: {
-            headers: {
-              'User-Agent': 'aistudio-build'
-            }
-          }
-        });
-        const pt = `Identify the song title and artist name for this Spotify track URL: ${url}
-Please return ONLY a JSON object in this format (no markdown code blocks, no backtick wrap, no other text):
-{
-  "title": "Song Title",
-  "artist": "Artist Name"
-}
-If you cannot identify it, reply with: {"title": "Unknown", "artist": "Unknown"}`;
-
-        const gRes = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
-          contents: pt,
-        });
-
-        const textOutput = gRes.text || "";
-        const cleanJson = textOutput.replace(/```json/gi, '').replace(/```/g, '').trim();
-        const meta = JSON.parse(cleanJson);
-        if (meta.title && meta.title !== "Unknown") {
-          queryTitle = `${meta.title} ${meta.artist}`;
-          console.log(`[Spotify System] Metadata resolved via Gemini: ${queryTitle}`);
-        }
-      } catch (err: any) {
-        console.warn("[Spotify System] Gemini metadata retrieval failed or premium query unavailable:", err.message || err);
-      }
-    }
-
-    // Fallback if Gemini failed or didn't run: extract ID from URL
-    if (!queryTitle) {
-      const match = url.match(/track\/([a-zA-Z0-9]+)/);
-      const trackId = match ? match[1] : "";
-      queryTitle = trackId ? `Spotify Track ${trackId}` : "Spotify Track";
-    }
-
-    // Advanced double-layered YouTube search
     let ytUrl = "";
     try {
-      const play = (await import('play-dl')).default;
-      const searched = await play.search(queryTitle + " audio", { limit: 1 });
-      if (searched && searched.length > 0) {
-        ytUrl = searched[0].url;
-      }
-    } catch(e: any) {
-      console.warn("[Spotify System] play-dl search fallback triggered:", e.message || e);
-    }
-
-    if (!ytUrl) {
-      try {
-        const yts = (await import('yt-search')).default;
-        const res = await yts(queryTitle + " audio");
-        if (res.all && res.all.length > 0) {
-          ytUrl = res.all[0].url;
-        }
-      } catch(e: any) {
-        console.error("[Spotify System] Search failed on both play-dl and yt-search:", e.message || e);
-      }
-    }
-
-    if (ytUrl) {
-      cleanUrl = ytUrl;
-      console.log(`[Spotify System] Successfully routed Spotify track to: ${cleanUrl}`);
-    }
-  }
-
-  // Try btch downloader
-  if (!streamUrl) {
-    try {
-      const btch = await import('btch-downloader');
-      const result = await btch.youtube(cleanUrl);
-      if (result.status && (result.mp4 || result.mp3)) {
-         streamUrl = isAudio ? result.mp3 : result.mp4;
-      }
+      // Parallel search for speed
+      const [play, yts] = await Promise.all([import('play-dl'), import('yt-search')]);
+      const [res1, res2] = await Promise.allSettled([
+        play.default.search(query + " audio", { limit: 1 }),
+        yts.default(query + " audio")
+      ]);
+      
+      if (res1.status === 'fulfilled' && res1.value.length > 0) ytUrl = res1.value[0].url;
+      else if (res2.status === 'fulfilled' && res2.value.all.length > 0) ytUrl = res2.value.all[0].url;
     } catch(e) {}
+
+    if (ytUrl) url = ytUrl; // route to youtube extractors
   }
 
-  // Fallback youtubedl
-  if (!streamUrl) {
-    try {
+  // Global Fallback (YouTube, etc)
+  const ytApis = [
+    async () => {
+      const btch = await import('btch-downloader');
+      const result = await btch.youtube(url);
+      if (result.status && (result.mp4 || result.mp3)) {
+         return isAudio ? result.mp3 : result.mp4;
+      }
+    },
+    async () => {
+       const ytdl = (await import('@distube/ytdl-core')).default;
+       const info = await ytdl.getInfo(url);
+       if (isAudio) {
+         const format = ytdl.filterFormats(info.formats, 'audioonly');
+         return format[0]?.url;
+       } else {
+         const format = ytdl.chooseFormat(info.formats, { quality: 'highestvideo', filter: 'audioandvideo' });
+         return format.url;
+       }
+    },
+    async () => {
       const youtubedl = (await import('youtube-dl-exec')).default;
-      const info: any = await youtubedl(cleanUrl, {
+      const info: any = await youtubedl(url, {
         dumpSingleJson: true,
         noWarnings: true,
         callHome: false,
         noCheckCertificates: true,
         format: isAudio ? 'bestaudio' : 'best'
       });
-      streamUrl = info.url;
-      if (!streamUrl && info.formats) {
+      let u = info.url;
+      if (!u && info.formats) {
         if (isAudio) {
            const audioFormats = info.formats.filter((f: any) => f.acodec !== 'none' && f.vcodec === 'none');
-           if (audioFormats.length > 0) streamUrl = audioFormats[audioFormats.length - 1].url;
+           if (audioFormats.length > 0) u = audioFormats[audioFormats.length - 1].url;
         } else {
            const videoFormats = info.formats.filter((f: any) => f.vcodec !== 'none' && f.acodec !== 'none');
-           if (videoFormats.length > 0) streamUrl = videoFormats[videoFormats.length - 1].url;
+           if (videoFormats.length > 0) u = videoFormats[videoFormats.length - 1].url;
            else {
              const anyVideo = info.formats.filter((f: any) => f.vcodec !== 'none');
-             if (anyVideo.length > 0) streamUrl = anyVideo[anyVideo.length - 1].url;
+             if (anyVideo.length > 0) u = anyVideo[anyVideo.length - 1].url;
            }
         }
       }
-      if (!streamUrl && info.entries && info.entries.length > 0) streamUrl = info.entries[0].url;
-    } catch(err: any) {
-      console.error("Fallback YTDL failed", err.message);
+      return u || (info.entries && info.entries[0]?.url);
     }
+  ];
+
+  for (const api of ytApis) {
+    try {
+      resultUrl = await api();
+      if (resultUrl) {
+        setCache(cacheKey, resultUrl);
+        return resultUrl;
+      }
+    } catch(e) {}
   }
 
-  return streamUrl;
+  setCache(cacheKey, resultUrl);
+  return resultUrl;
 }
 
 // API Route for Downloader
@@ -178,36 +237,52 @@ app.post("/api/download", async (req, res) => {
        throw new Error("Server gagal dapetin link raw nya.");
     }
 
+  const userAgents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
+  ];
+    const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
+
     const response = await axios({
       method: "GET",
       url: streamUrl,
       responseType: "stream",
+      timeout: 30000, // 30 seconds timeout
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": randomUA,
+        "Accept": "*/*",
+        "Accept-Encoding": "identity",
+        "Connection": "keep-alive",
+        "Referer": "https://www.google.com/"
       }
     });
 
     res.setHeader("Content-Type", isAudio ? "audio/mpeg" : "video/mp4");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Cache-Control", "no-cache");
     
     response.data.pipe(res);
     
   } catch (error: any) {
-    console.error("Download Error:", error.message || error);
-    const msg = error.message || "";
-    let userErr = "Gagal ngambil file asli. Mungkin linknya salah atau server tujuan memblokir.";
+    console.error("Download Error Detail:", error.message || error);
+    const msg = (error.message || "").toLowerCase();
+    let userErr = "Gagal narik file aslinya. Mungkin link salah, diprotect, atau server lagi sibuk.";
     
-    if (msg.includes('Sign in to confirm') || msg.includes('miniget')) {
-       userErr = "Waduh, Video ini diblokir YouTube (Bot Detection). Coba video lain.";
-    } else if (msg.includes('DRM protection')) {
-       userErr = "Waduh! Video/Audio ini kena DRM (Hak Cipta ketat), sistem gak diizinin nyedot.";
-    } else if (msg.includes('No video could be found') || msg.includes('empty media response')) {
-       userErr = platform === 'Instagram' 
-          ? "Waduh, Instagram lagi protect gila-gilaan nih API gratisannya. Kalo link lu bener, coba pakai reel lain / tunggu ntar ya!" 
-          : "Link bener, tapi kaga ada videonya atau akunnya di-Private bre.";
+    if (msg.includes('403') || msg.includes('forbidden')) {
+       userErr = `Waduh, akses diblokir sama ${platform}. Server mereka kaga mau ngasih filenya ke Cloud Vercel. Coba lagi ntar ya!`;
+    } else if (msg.includes('404')) {
+       userErr = "Media kaga ketemu, bre. Cek linknya lagi, siapa tau videonya diapus.";
+    } else if (msg.includes('timeout')) {
+       userErr = "Server tujuan kelamaan balesnya. Jaringannya lagi lelet kayaknya.";
+    } else if (msg.includes('sign in to confirm') || msg.includes('miniget')) {
+       userErr = "Video ini diblokir YouTube (Bot Detection). Coba cari link video lain.";
+    } else if (msg.includes('drm protection')) {
+       userErr = "Konten ini diproteksi Hak Cipta (DRM), sistem kaga berani nyolong.";
     }
 
-    res.status(500).json({ error: userErr });
+    res.status(error.response?.status || 500).json({ error: userErr });
   }
 });
 
@@ -226,11 +301,25 @@ app.post("/api/transcript", async (req, res) => {
        return res.status(500).json({ error: "Gagal nyari sumber raw audionya bre. Pastiin linknya bener." });
     }
 
+    const userAgents = [
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+    ];
+    const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
+
     const tempId = Date.now() + Math.floor(Math.random() * 1000);
     const tempPath = path.join(os.tmpdir(), `audio_${tempId}.mp3`);
     
     try {
-      const streamRes = await axios({ method: 'GET', url: audioUrl, responseType: 'stream' });
+      const streamRes = await axios({ 
+        method: 'GET', 
+        url: audioUrl, 
+        responseType: 'stream',
+        headers: {
+          "User-Agent": randomUA,
+          "Accept": "*/*"
+        }
+      });
       const writer = fs.createWriteStream(tempPath);
       streamRes.data.pipe(writer);
       await new Promise((resolve, reject) => {
@@ -252,7 +341,7 @@ app.post("/api/transcript", async (req, res) => {
       const pt = `Tuliskan transkrip persis seperti yang diucapkan dalam audio ini. Jika ini lagu atau obrolan, tuliskan lirik atau kalimatnya secara nyata. Jangan ada pengantar atau penutup tambahan, langsung transkrip. Gunakan bahasa gaul atau obrolan santai jika ada di dalam audio.`;
 
       const aiResponse = await ai.models.generateContent({
-         model: "gemini-3.5-flash",
+         model: "gemini-1.5-flash",
          contents: [
            {
              role: 'user',
