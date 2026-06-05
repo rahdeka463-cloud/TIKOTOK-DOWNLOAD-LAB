@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, Copy, Play, Pause, AlertCircle, CheckCircle2, Info } from 'lucide-react';
-import { ThemeConfig } from '../types';
+import { ThemeConfig } from '../lib/theme';
 import { cn } from '../lib/utils';
 
 export default function Transcript({ theme }: { theme: ThemeConfig }) {
@@ -31,6 +31,13 @@ export default function Transcript({ theme }: { theme: ThemeConfig }) {
 
   const doProcess = async (targetUrl: string) => {
     if (!targetUrl.trim()) return;
+
+    const lowerUrl = targetUrl.toLowerCase();
+    if (!lowerUrl.includes('youtube.com') && !lowerUrl.includes('youtu.be')) {
+      setToast({ message: 'Sori bre, menu ini khusus untuk transkrip video YouTube aja ya! 🙏', type: 'error' });
+      return;
+    }
+
     setStatus('loading');
     setTranscriptText('');
     setAudioUrl('');
@@ -95,10 +102,10 @@ export default function Transcript({ theme }: { theme: ThemeConfig }) {
     <div className="w-full max-w-4xl mx-auto px-4 mt-4 md:mt-8">
       <div className="text-center mb-8 md:mb-10">
         <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 md:mb-3">
-          Audio To Text Transcript 🎙️
+          YouTube Video To Text Transcript 🎙️
         </h2>
         <p className="text-white/60 text-sm md:text-lg max-w-2xl mx-auto">
-          Ubah video YouTube otomatis atau audio Spotify jadi teks dalam sepersekian detik!
+          Ubah video YouTube otomatis jadi teks asli dalam sekian detik!
         </p>
       </div>
 

@@ -1,7 +1,7 @@
-import app from "./api/index";
-import { createServer as createViteServer } from "vite";
+import app from "./src/server/app.js";
 import path from "path";
 import express from "express";
+import { createServer as createViteServer } from "vite";
 
 async function startServer() {
   const PORT = 3000;
@@ -14,7 +14,7 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // Production serving (for non-Vercel environments like our standard build)
+    // Production serving
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {

@@ -1,6 +1,6 @@
 import { Zap, ShieldCheck, Download, CodeXml } from 'lucide-react';
 import { Platform } from '../types';
-import { ThemeConfig } from '../types';
+import { ThemeConfig } from '../lib/theme';
 import { cn } from '../lib/utils';
 
 export default function Tutorials({ platform, theme }: { platform: Platform, theme: ThemeConfig }) {

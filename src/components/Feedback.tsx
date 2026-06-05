@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { ThemeConfig } from '../types';
+import { ThemeConfig } from '../lib/theme';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 

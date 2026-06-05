@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Platform, ALL_PLATFORMS, platformThemes } from './types';
+import { ALL_PLATFORMS } from './data';
+import { Platform } from './types';
+import { platformThemes } from './lib/theme';
 import { BrandIcon } from './components/BrandIcons';
 import { cn } from './lib/utils';
 import { AnimatePresence } from 'motion/react';
@@ -103,7 +105,7 @@ export default function App() {
                 )}
               >
                 <BrandIcon platform={p} className="w-5 h-5 shrink-0" />
-                <span>Format Khusus: Ekstrak Teks ({p}) 🎙️</span>
+                <span>Format Khusus: Ekstrak Teks YouTube Video 🎙️</span>
               </button>
             );
           })()}

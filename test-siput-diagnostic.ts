@@ -1,0 +1,21 @@
+import axios from 'axios';
+
+const endpoints = [
+  'https://api.siputzx.my.id/api/d/ig',
+  'https://api.siputzx.my.id/api/d/igdl',
+  'https://api.siputzx.my.id/api/d/instagram',
+  'https://api.siputzx.my.id/api/d/facebook'
+];
+
+async function test() {
+  for (const ep of endpoints) {
+    try {
+      const res = await axios.get(ep);
+      console.log(`[Diagnostic] ${ep} success:`, res.status, res.data);
+    } catch(e:any) {
+      console.log(`[Diagnostic] ${ep} error:`, e.response?.status, typeof e.response?.data === 'string' ? e.response?.data.substring(0, 100) : e.response?.data);
+    }
+  }
+}
+
+test();

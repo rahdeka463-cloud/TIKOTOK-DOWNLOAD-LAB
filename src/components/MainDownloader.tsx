@@ -3,7 +3,7 @@ import { Loader2, Download, CheckCircle2, Copy, AlertCircle } from 'lucide-react
 import { Platform, DownloadOptions } from '../types';
 import { cn } from '../lib/utils';
 import axios from 'axios';
-import { ThemeConfig } from '../types';
+import { ThemeConfig } from '../lib/theme';
 import { motion, AnimatePresence } from 'motion/react';
 
 const OPTIONS: DownloadOptions[] = ['Full HD(1080p)', 'HD(720p)', 'Audio(MP3)', 'Tanpa Watermark'];
