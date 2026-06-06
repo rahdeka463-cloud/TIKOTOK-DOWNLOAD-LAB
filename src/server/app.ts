@@ -34,7 +34,7 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
 
   let resultUrl: string | null | undefined = "";
   const lowerUrl = url.toLowerCase();
-  const T = 5000; // Optimal 5s timeout for stability
+  const T = 15000; // Optimal 15s timeout for stability on Serverless
 
   const executeApisFast = async (apis: ((() => Promise<string | undefined | null>))[]) => {
     try {
@@ -131,18 +131,25 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
   
   // 5. Spotify
   else if (lowerUrl.includes('spotify.com')) {
-    const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
-    const query = trackIdMatch ? `Spotify Track ${trackIdMatch[1]}` : "Spotify Track";
-    try {
-      const play = await import('play-dl');
-      const res = await play.default.search(query + " audio", { limit: 1 });
-      if (res.length > 0) {
-        const ytdl = (await import('@distube/ytdl-core')).default;
-        const info = await ytdl.getInfo(res[0].url);
-        const format = ytdl.filterFormats(info.formats, 'audioonly');
-        resultUrl = format[0]?.url;
+    resultUrl = await executeApisFast([
+      async () => {
+         const res = await axios.get(`https://api.siputzx.my.id/api/s/spotify?query=${url}`, { timeout: T });
+         if (res.data?.data) return res.data.data.download;
+      },
+      async () => {
+         // Fallback manual scrape
+         const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+         const query = trackIdMatch ? `Spotify Track ${trackIdMatch[1]}` : "Spotify Track";
+         const play = await import('play-dl');
+         const res = await play.default.search(query + " audio", { limit: 1 });
+         if (res.length > 0) {
+           const ytdl = (await import('@distube/ytdl-core')).default;
+           const info = await ytdl.getInfo(res[0].url);
+           const format = ytdl.filterFormats(info.formats, 'audioonly');
+           return format[0]?.url;
+         }
       }
-    } catch(e) {}
+    ]);
   }
 
   // Global Fallback (YouTube, etc)
@@ -277,7 +284,7 @@ app.post("/api/transcript", async (req, res) => {
         method: 'GET', 
         url: audioUrl, 
         responseType: 'arraybuffer',
-        timeout: 10000,
+        timeout: 45000,
         headers: {
           "User-Agent": randomUA,
           "Accept": "*/*"
@@ -292,7 +299,7 @@ app.post("/api/transcript", async (req, res) => {
              method: 'GET',
              url: proxyUrl,
              responseType: 'arraybuffer',
-             timeout: 10000,
+             timeout: 30000,
              headers: { "User-Agent": randomUA }
            });
          } catch(e) {
@@ -301,7 +308,7 @@ app.post("/api/transcript", async (req, res) => {
              method: 'GET',
              url: proxyUrl2,
              responseType: 'arraybuffer',
-             timeout: 10000,
+             timeout: 30000,
              headers: { "User-Agent": randomUA }
            });
          }
