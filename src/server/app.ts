@@ -310,6 +310,24 @@ app.post("/api/transcript", async (req, res) => {
       }
     }
 
+    const contentType = streamRes.headers['content-type'] || '';
+    if (contentType.includes('text/html') || streamRes.data.byteLength < 1000) {
+        throw new Error("Gagal ngambil file media, link nggak ngasih data audio/video (bukan valid media).");
+    }
+
+    let validMime = "audio/mp3";
+    if (contentType.includes('mp4')) validMime = 'video/mp4';
+    else if (contentType.includes('ogg')) validMime = 'audio/ogg';
+    else if (contentType.includes('wav')) validMime = 'audio/wav';
+    else if (contentType.includes('aac')) validMime = 'audio/aac';
+    else if (contentType.includes('webm')) validMime = 'video/webm';
+    else if (contentType.includes('mpeg')) validMime = 'audio/mpeg';
+
+    const sizeInMB = streamRes.data.byteLength / (1024 * 1024);
+    if (sizeInMB > 19) {
+        throw new Error(`Ukuran audionya kegedean bro (${sizeInMB.toFixed(1)}MB), batas untuk langsung ditarik AI cuma 20MB.`);
+    }
+
     const base64Audio = Buffer.from(streamRes.data).toString('base64');
 
     const ai = new GoogleGenAI({ 
@@ -329,7 +347,7 @@ app.post("/api/transcript", async (req, res) => {
          {
            role: 'user',
            parts: [
-             { inlineData: { data: base64Audio, mimeType: "audio/mp3" } },
+             { inlineData: { data: base64Audio, mimeType: validMime } },
              { text: pt }
            ]
          }

@@ -1,6 +1,6 @@
 {
-  "name": "TikoTok Download Lab",
-  "description": "Download video dan audio dari TikTok, YouTube, Instagram, Twitter, Facebook, dan Spotify gratis dengan kualitas HD dan script audio-to-text.",
+  "name": "TikTok Download Lab",
+  "description": "Download video dan audio gratis dengan kualitas HD dan script audio-to-text.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
