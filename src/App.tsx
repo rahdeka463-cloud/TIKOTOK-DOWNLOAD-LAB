@@ -18,20 +18,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col font-sans relative overflow-x-hidden">
-      {/* Pre-rendered Platform Background Glows with Hardware Accelerated Opacity Transitions */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activePlatform}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.35 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "circOut" }}
-          className={cn(
-            "absolute top-0 inset-x-0 h-[700px] bg-gradient-to-b to-transparent pointer-events-none z-0",
-            theme.gradient
-          )}
-        />
-      </AnimatePresence>
+      {/* Pre-rendered Platform Background Glows with Hardware Accelerated Transitions */}
+      <div
+        className={cn(
+          "absolute top-0 inset-x-0 h-[700px] bg-gradient-to-b to-transparent pointer-events-none z-0 transition-all duration-1000 ease-in-out platform-glow",
+          theme.gradient
+        )}
+        style={{ opacity: 0.35 }}
+      />
       
       {/* Header Info */}
       <header className="w-full max-w-6xl mx-auto pt-16 pb-8 md:pt-20 md:pb-10 px-4 text-center relative z-10">
@@ -137,11 +131,12 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.section 
             key={activePlatform}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             id="downloader"
+            className="will-change-transform"
           >
             {activePlatform === 'Transcript' ? (
               <Transcript theme={theme} />

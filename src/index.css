@@ -6,9 +6,36 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+@layer base {
+  * {
+    @apply border-white/5;
+  }
+  body {
+    @apply bg-slate-950 text-white selection:bg-white/20;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.will-change-transform {
+  will-change: transform, opacity;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
 html {
   background-color: #020617; /* bg-slate-950 */
   color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+.platform-glow {
+  transform: translate3d(0, 0, 0);
+  will-change: opacity, filter;
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 body {

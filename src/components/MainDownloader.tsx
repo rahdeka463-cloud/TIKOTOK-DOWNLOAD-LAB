@@ -75,47 +75,34 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
       const response = await axios({
         method: 'POST',
         url: '/api/download',
-        data: { url: trimmedUrl, platform, options: selectedOptions },
-        responseType: 'blob',
-        onDownloadProgress: (progressEvent) => {
-          if (progressEvent.total) {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setDownloadProgress(percent);
-            setLoadingStep(`Lagi ditarik... ${percent}%`);
-          } else {
-            setLoadingStep('Lagi narik data ke server...');
-          }
-        },
-        timeout: 120000 // 2 minutes
+        data: { url: trimmedUrl, platform, options: selectedOptions, direct: true },
+        timeout: 20000 // 20s timeout just to get the URL
       });
 
-      setLoadingStep('Selesai! Lagi nyimpen...');
-      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      const isAudio = selectedOptions.includes('Audio(MP3)');
-      const ext = isAudio ? 'mp3' : 'mp4';
-      link.setAttribute('download', `TikoTokLab_${platform}_${Date.now()}.${ext}`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      
-      setStatus('success');
-      setTimeout(() => {
-        setStatus('idle');
-        setDownloadProgress(0);
-      }, 5000);
+      if (response.data && response.data.directUrl) {
+        setLoadingStep('Membuka file...');
+        
+        setStatus('success');
+        setTimeout(() => {
+          // Navigating current window directly handles downloading effectively
+          // or opens full screen media viewer depending on OS - preventing popup blocks.
+          window.location.href = response.data.directUrl;
+          setStatus('idle');
+          setDownloadProgress(0);
+        }, 1200);
+      } else {
+        throw new Error("Gagal dapet direct link dari server coy.");
+      }
     } catch (error: any) {
       console.error(error);
-      const isJsonBlob = error.response?.data instanceof Blob && error.response.data.type === 'application/json';
       let serverError = 'Waduh, server lagi sibuk coy! Bentar ya diulang lagi.';
       
-      if (isJsonBlob) {
-        const textData = await error.response.data.text();
-        const json = JSON.parse(textData);
-        if (json.error) serverError = json.error;
+      if (error.response?.data?.error) {
+        serverError = error.response.data.error;
       } else if (error.message?.includes('timeout')) {
         serverError = "Waduh, jaringannya kelamaan bre. Coba lagi!";
+      } else if (error.message) {
+        serverError = error.message;
       }
       
       setErrorMsg(serverError);
@@ -235,7 +222,7 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
             onClick={handleDownload}
             disabled={!url || status === 'loading'}
             className={cn(
-              "w-full rounded-xl md:rounded-2xl py-4 md:py-5 text-lg md:text-xl font-extrabold transition-all duration-300 active:scale-[0.98] disabled:active:scale-100 flex items-center justify-center gap-2 md:gap-3 relative z-10 outline-none overflow-hidden cursor-pointer disabled:cursor-not-allowed",
+              "w-full rounded-xl md:rounded-2xl py-4 md:py-5 text-lg md:text-xl font-extrabold transition-all duration-300 active:scale-[0.98] disabled:active:scale-100 flex items-center justify-center gap-2 md:gap-3 relative z-10 outline-none overflow-hidden cursor-pointer disabled:cursor-not-allowed will-change-transform",
               status === 'success' 
                 ? "bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/30 text-white" 
                 : `${theme.button} shadow-xl ${theme.shadow} disabled:bg-white/5 disabled:text-white/30 disabled:border disabled:border-white/10 disabled:shadow-none`
