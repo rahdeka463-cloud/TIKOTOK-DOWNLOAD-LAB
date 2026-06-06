@@ -292,7 +292,7 @@ app.post("/api/transcript", async (req, res) => {
       });
     } catch (streamErr: any) {
       if (streamErr.response && (streamErr.response.status === 403 || streamErr.response.status === 401)) {
-         console.log("[Vercel Proxy] Terblokir 403. Nyoba pake proxy CORS...");
+         console.log("[Proxy] Terblokir 403. Nyoba pake proxy CORS...");
          const proxyUrl = `https://cors.ryzendesu.vip/?url=${encodeURIComponent(audioUrl)}`;
          try {
            streamRes = await axios({
