@@ -48,6 +48,17 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
     }
   };
 
+  const tryCobaltInstances = async () => {
+     const instances = ["https://cobalt.kwiatechu.com", "https://api.cobalt.faceless.work", "https://cobalt.owo.network", "https://co.wuk.sh", "https://cobalt.q0.uk"];
+     return executeApisFast(instances.map(host => async () => {
+         const res = await axios.post(host, { url, isAudioOnly: isAudio }, {
+           headers: { "Accept": "application/json", "Content-Type": "application/json" },
+           timeout: T
+         });
+         return res.data?.url;
+     }));
+  };
+
   // 1. TikTok
   if (lowerUrl.includes('tiktok.com')) {
     resultUrl = await executeApisFast([
@@ -57,26 +68,34 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
         if (d) return isAudio ? `https://www.tikwm.com${d.music}` : `https://www.tikwm.com${d.hdplay || d.play}`;
       },
       async () => {
-        const res = await axios.get(`https://api.siputzx.my.id/api/d/tiktok?url=${url}`, { timeout: T });
-        if (res.data?.data) return isAudio ? res.data.data.music : (res.data.data.hdplay || res.data.data.play);
-      },
-      async () => {
         const res = await axios.get(`https://api.tiklydown.eu.org/api/download?url=${url}`, { timeout: T });
         if (res.data) return isAudio ? res.data.music?.play_url : res.data.video?.noWatermark;
-      }
+      },
+      tryCobaltInstances
     ]);
   }
 
   // 2. Instagram
   else if (lowerUrl.includes('instagram.com')) {
     resultUrl = await executeApisFast([
+      tryCobaltInstances,
       async () => {
-        const res = await axios.get(`https://api.siputzx.my.id/api/d/instagram?url=${url}`, { timeout: T });
+        const res = await axios.get(`https://api.siputzx.my.id/api/d/igdl?url=${url}`, { timeout: T });
         if (res.data?.data?.length > 0) return res.data.data[0].url || res.data.data[0].downloadUrl;
       },
       async () => {
         const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/igdown?url=${url}&apikey=p825s07w`, { timeout: T });
-        return res.data?.result?.[0]?.url || res.data?.result?.url || res.data?.result?.[0]; // robust checking
+        return res.data?.result?.[0]?.url || res.data?.result?.url || res.data?.result?.[0]; 
+      },
+      async () => {
+        const params = new URLSearchParams();
+        params.append('url', url);
+        params.append('action', 'post');
+        const res = await axios.post('https://snapinsta.app/action.php', params, {
+          headers: { 'Origin': 'https://snapinsta.app', 'Referer': 'https://snapinsta.app/', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }, timeout: T
+        });
+        const match = res.data.match(/href=\\"(https:\\\/\\\/[^"]+\.mp4[^"]*)\\"/);
+        return match ? match[1].replace(/\\/g, '') : null;
       }
     ]);
   }
@@ -85,23 +104,11 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
   else if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) {
     resultUrl = await executeApisFast([
       async () => {
-        const res = await axios.get(`https://api.siputzx.my.id/api/d/twitter?url=${url}`, { timeout: T });
-        if (res.data?.data?.url) return res.data.data.url;
-        const media = res.data?.data?.media;
-        if (media?.length > 0) {
-            const vid = media.reverse().find((m: any) => m.type === 'video' || m.type === 'animated_gif' || m.url);
-            return vid?.url || media[0].url;
-        }
-      },
-      async () => {
         const res = await axios.get(`https://twitsave.com/info?url=${url}`, { timeout: T });
         const match = res.data.match(/href="([^"]+\.mp4[^"]*)"/);
         return match ? match[1] : null;
       },
-      async () => {
-        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/twitter?url=${url}&apikey=p825s07w`, { timeout: T });
-        return res.data?.result?.[0]?.url || res.data?.result?.url || res.data?.result?.video;
-      }
+      tryCobaltInstances
     ]);
   }
 
@@ -109,23 +116,13 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
   else if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.watch')) {
     resultUrl = await executeApisFast([
       async () => {
-        const res = await axios.get(`https://api.siputzx.my.id/api/d/facebook?url=${url}`, { timeout: T });
-        const downloads = res.data?.data?.downloads;
-        if (downloads?.length > 0) {
-          return isAudio ? downloads[downloads.length - 1].url : (downloads.find((d: any) => d.quality === 'HD') || downloads[0]).url;
-        }
-      },
-      async () => {
         const res = await axios.post(`https://getmyfb.com/api/ajax/search`, `vid=${encodeURIComponent(url)}`, { headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' }, timeout: T });
         if(res.data) {
            const match = res.data.match(/href="([^"]+)"/);
            if (match) return match[1];
         }
       },
-      async () => {
-        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/fbdown?url=${url}&apikey=p825s07w`, { timeout: T });
-        return res.data?.result?.url || res.data?.result?.sd;
-      }
+      tryCobaltInstances
     ]);
   }
   
@@ -137,7 +134,6 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
          if (res.data?.data) return res.data.data.download;
       },
       async () => {
-         // Fallback manual scrape
          const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
          const query = trackIdMatch ? `Spotify Track ${trackIdMatch[1]}` : "Spotify Track";
          const play = await import('play-dl');
@@ -155,19 +151,11 @@ async function resolveMediaUrl(url: string, isAudio: boolean): Promise<string> {
   // Global Fallback (YouTube, etc)
   if (!resultUrl) {
     resultUrl = await executeApisFast([
+      tryCobaltInstances,
       async () => {
         const res = await axios.get(`https://api.siputzx.my.id/api/d/youtube?url=${url}`, { timeout: T });
         const d = res.data?.data;
         if (d) return isAudio ? d.audio || d.mp3 || d.url : d.video || d.mp4 || d.url || (d.downloads && d.downloads[0]?.url);
-      },
-      async () => {
-        const res = await axios.get(`https://api.botcahx.eu.org/api/dowloader/yt?url=${url}&apikey=p825s07w`, { timeout: T });
-        return isAudio ? res.data?.result?.mp3 : res.data?.result?.mp4;
-      },
-      async () => {
-        const btch = await import('btch-downloader');
-        const result = await btch.youtube(url);
-        if (result.status && (result.mp4 || result.mp3)) return isAudio ? result.mp3 : result.mp4;
       },
       async () => {
          const ytdl = (await import('@distube/ytdl-core')).default;
@@ -272,11 +260,12 @@ app.post("/api/transcript", async (req, res) => {
        return res.status(500).json({ error: "Gagal nyari sumber raw audionya bre. Pastiin linknya bener." });
     }
 
-    const userAgents = [
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    ];
-    const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
+    const headers = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Referer": "https://www.google.com/"
+    };
 
     let streamRes;
     try {
@@ -285,41 +274,39 @@ app.post("/api/transcript", async (req, res) => {
         url: audioUrl, 
         responseType: 'arraybuffer',
         timeout: 45000,
-        headers: {
-          "User-Agent": randomUA,
-          "Accept": "*/*"
-        }
+        headers
       });
     } catch (streamErr: any) {
-      if (streamErr.response && (streamErr.response.status === 403 || streamErr.response.status === 401)) {
-         console.log("[Proxy] Terblokir 403. Nyoba pake proxy CORS...");
-         const proxyUrl = `https://cors.ryzendesu.vip/?url=${encodeURIComponent(audioUrl)}`;
-         try {
-           streamRes = await axios({
-             method: 'GET',
-             url: proxyUrl,
-             responseType: 'arraybuffer',
-             timeout: 30000,
-             headers: { "User-Agent": randomUA }
-           });
-         } catch(e) {
-           const proxyUrl2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(audioUrl)}`;
-           streamRes = await axios({
-             method: 'GET',
-             url: proxyUrl2,
-             responseType: 'arraybuffer',
-             timeout: 30000,
-             headers: { "User-Agent": randomUA }
-           });
-         }
-      } else {
-         throw streamErr;
+      console.log("[Transcript] Direct fetch failed, trying proxy 1...");
+      try {
+        streamRes = await axios({
+          method: 'GET',
+          url: `https://cors.ryzendesu.vip/?url=${encodeURIComponent(audioUrl)}`,
+          responseType: 'arraybuffer',
+          timeout: 45000,
+          headers
+        });
+      } catch(e) {
+        console.log("[Transcript] Proxy 1 failed, trying proxy 2...");
+        try {
+          streamRes = await axios({
+            method: 'GET',
+            url: `https://api.allorigins.win/raw?url=${encodeURIComponent(audioUrl)}`,
+            responseType: 'arraybuffer',
+            timeout: 45000,
+            headers
+          });
+        } catch(e2) {
+          throw new Error("Gagal donlod source media, sistem ngeblok akses donlod ke link ini.");
+        }
       }
     }
 
     const contentType = streamRes.headers['content-type'] || '';
-    if (contentType.includes('text/html') || streamRes.data.byteLength < 1000) {
-        throw new Error("Gagal ngambil file media, link nggak ngasih data audio/video (bukan valid media).");
+    const isHtml = contentType.includes('text/html') && streamRes.data.byteLength < 500000;
+    
+    if (isHtml || streamRes.data.byteLength < 1000) {
+        throw new Error("Gagal ngambil file media, link kena blokir Captcha/Cloudflare (bukan valid media). Coba link platform lain.");
     }
 
     let validMime = "audio/mp3";
@@ -331,35 +318,56 @@ app.post("/api/transcript", async (req, res) => {
     else if (contentType.includes('mpeg')) validMime = 'audio/mpeg';
 
     const sizeInMB = streamRes.data.byteLength / (1024 * 1024);
-    if (sizeInMB > 19) {
-        throw new Error(`Ukuran audionya kegedean bro (${sizeInMB.toFixed(1)}MB), batas untuk langsung ditarik AI cuma 20MB.`);
-    }
-
-    const base64Audio = Buffer.from(streamRes.data).toString('base64');
-
-    const ai = new GoogleGenAI({ 
-      apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build'
-        }
-      }
-    });
-
+    
+    const ai = new GoogleGenAI({ apiKey });
     const pt = `Tuliskan transkrip persis seperti yang diucapkan dalam audio ini. Jika ini lagu atau obrolan, tuliskan lirik atau kalimatnya secara nyata. Jangan ada pengantar atau penutup tambahan, langsung transkrip. Gunakan bahasa gaul atau obrolan santai jika ada di dalam audio.`;
 
-    const aiResponse = await ai.models.generateContent({
-       model: "gemini-1.5-flash-8b",
-       contents: [
-         {
-           role: 'user',
-           parts: [
-             { inlineData: { data: base64Audio, mimeType: validMime } },
-             { text: pt }
+    let aiResponse;
+
+    if (sizeInMB > 19) {
+        // Use File API for large files
+        const tempFilePath = path.join(os.tmpdir(), `audio_${Date.now()}.${validMime.split('/')[1]}`);
+        fs.writeFileSync(tempFilePath, Buffer.from(streamRes.data));
+        
+        try {
+            const uploadResult = await ai.files.upload({
+              file: tempFilePath,
+              mimeType: validMime,
+            });
+
+            aiResponse = await ai.models.generateContent({
+              model: "gemini-1.5-flash",
+              contents: [
+                {
+                  role: 'user',
+                  parts: [
+                    { fileData: { fileUri: uploadResult.uri, mimeType: validMime } },
+                    { text: pt }
+                  ]
+                }
+              ]
+            });
+            
+            // Cleanup
+            await ai.files.delete({ name: uploadResult.name }).catch(() => {});
+        } finally {
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+        }
+    } else {
+        const base64Audio = Buffer.from(streamRes.data).toString('base64');
+        aiResponse = await ai.models.generateContent({
+           model: "gemini-1.5-flash-8b",
+           contents: [
+             {
+               role: 'user',
+               parts: [
+                 { inlineData: { data: base64Audio, mimeType: validMime } },
+                 { text: pt }
+               ]
+             }
            ]
-         }
-       ]
-    });
+        });
+    }
 
     res.json({ transcript: aiResponse.text, audioUrl: audioUrl });
 
