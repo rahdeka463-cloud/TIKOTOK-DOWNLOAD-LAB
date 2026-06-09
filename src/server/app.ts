@@ -332,7 +332,7 @@ app.post("/api/transcript", async (req, res) => {
         try {
             const uploadResult = await ai.files.upload({
               file: tempFilePath,
-              mimeType: validMime,
+              config: { mimeType: validMime },
             });
 
             aiResponse = await ai.models.generateContent({
