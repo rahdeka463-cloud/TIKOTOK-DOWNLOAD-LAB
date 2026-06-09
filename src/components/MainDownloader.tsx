@@ -127,13 +127,19 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
-      <div className="bg-white/5 border border-white/10 rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-10 backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 hover:bg-white/[0.08] group">
+      <div className="bg-white/5 border border-white/10 rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-10 backdrop-blur-md md:backdrop-blur-xl shadow-2xl relative overflow-hidden transition-colors duration-500 hover:bg-white/[0.08] group">
         
-        <div className={cn("absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none transition-colors duration-1000", theme.checkBg)} />
+        {/* Pre-rendered background glows instead of transition-colors on a blur element */}
+        {platform === 'TikTok' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none bg-sky-500" />}
+        {platform === 'Instagram' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none bg-fuchsia-500" />}
+        {platform === 'YouTube' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none bg-red-500" />}
+        {platform === 'Facebook' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none bg-blue-500" />}
+        {platform === 'Twitter' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-30 pointer-events-none bg-white" />}
+        {platform === 'Spotify' && <div className="absolute -top-32 -right-32 w-64 h-64 blur-3xl rounded-full opacity-20 pointer-events-none bg-emerald-500" />}
 
         <div className="mb-6 md:mb-8 relative z-10">
           <label className="block text-white/90 font-semibold mb-2 md:mb-3 ml-1 md:ml-2 text-sm md:text-base">Paste disini, bre!👇</label>
-          <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
+          <div className="relative w-full">
             <input
               ref={inputRef}
               type="text"
@@ -142,17 +148,21 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
                 setUrl(e.target.value);
                 if (errorMsg) setErrorMsg('');
               }}
-              placeholder={`Masukkan URL video ${platform} lu disini...`}
+              placeholder={`Masukkan URL ${platform} lu disini...`}
               className={cn(
-                "flex-1 bg-black/40 border text-white rounded-xl md:rounded-2xl px-5 py-3 md:px-6 md:py-4 focus:outline-none focus:ring-2 font-mono text-sm md:text-base transition-all placeholder:text-white/30 backdrop-blur-md",
+                "w-full bg-black/40 border text-white rounded-xl md:rounded-2xl pl-5 pr-[110px] py-4 md:pl-6 md:pr-[120px] md:py-4 focus:outline-none focus:ring-2 font-mono text-base transition-all placeholder:text-white/30 backdrop-blur-md",
                 errorMsg ? "border-red-500 focus:ring-red-500" : `border-white/10 ${theme.ring}`
               )}
             />
             <button
               onClick={handlePaste}
-              className="bg-white/10 hover:bg-white/20 border border-white/5 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold transition-all active:scale-95 flex items-center justify-center shrink-0 w-full sm:w-auto text-sm md:text-base cursor-pointer"
+              title="Paste link clipboard"
+              className={cn(
+                "absolute right-2 top-1/2 -translate-y-1/2 border border-white/5 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all active:scale-95 flex items-center justify-center text-xs sm:text-sm cursor-pointer z-10",
+                theme.button, "shadow-md hover:brightness-110"
+              )}
             >
-              <Copy size={18} className="mr-2 opacity-70" /> Paste
+              <Copy size={14} className="mr-1.5 opacity-70" /> Paste
             </button>
           </div>
           
@@ -181,13 +191,12 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
             {availableOptions.map((opt) => {
               const isSelected = selectedOptions.includes(opt);
               return (
-                <motion.button
-                  layout
+                <button
                   key={opt}
                   onClick={() => toggleOption(opt)}
                   disabled={platform === 'Spotify' || status === 'loading'}
                   className={cn(
-                    "px-3 md:px-4 py-3 border rounded-xl transition-all duration-300 flex flex-row items-center justify-start gap-3 backdrop-blur-md active:scale-95 will-change-transform cursor-pointer disabled:cursor-not-allowed group/opt",
+                    "px-3 md:px-4 py-3 border rounded-xl transition-all duration-300 flex flex-row items-center justify-start gap-3 backdrop-blur-md active:scale-95 cursor-pointer disabled:cursor-not-allowed group/opt",
                     isSelected 
                       ? `bg-white/10 border-transparent text-white shadow-inner ${theme.shadow}` 
                       : "bg-black/20 border-white/5 text-white/50 hover:bg-black/40 hover:text-white"
@@ -200,7 +209,7 @@ export default function MainDownloader({ platform, theme }: { platform: Platform
                     {isSelected && <CheckCircle2 size={12} className="md:w-3.5 md:h-3.5" strokeWidth={3} />}
                   </div>
                   <span className="text-xs sm:text-sm font-bold leading-tight text-left line-clamp-2 md:line-clamp-1 uppercase tracking-tighter">{opt}</span>
-                </motion.button>
+                </button>
               )
             })}
           </div>

@@ -114,10 +114,10 @@ export default function Transcript({ theme }: { theme: ThemeConfig }) {
         </motion.p>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-10 backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 hover:bg-white/[0.08]">
+      <div className="bg-white/5 border border-white/10 rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-10 backdrop-blur-md md:backdrop-blur-xl shadow-2xl relative overflow-hidden transition-all duration-500 hover:bg-white/[0.08]">
         <div className="mb-6 md:mb-8 relative z-10">
           <label className="block text-white/90 font-semibold mb-2 md:mb-3 ml-1 md:ml-2 text-sm md:text-base">Paste link video YouTube kesini👇</label>
-          <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
+          <div className="relative w-full">
             <input
               type="text"
               value={url}
@@ -125,7 +125,7 @@ export default function Transcript({ theme }: { theme: ThemeConfig }) {
               onPaste={handlePasteEvent}
               placeholder="https://youtube.com/watch?v=..."
               className={cn(
-                "flex-1 bg-black/40 border border-white/10 text-white rounded-xl md:rounded-2xl px-5 py-3 md:px-6 md:py-4 focus:outline-none focus:ring-2 font-mono text-sm md:text-base transition-all placeholder:text-white/30 backdrop-blur-md",
+                "w-full bg-black/40 border border-white/10 text-white rounded-xl md:rounded-2xl pl-5 pr-[130px] py-4 md:pl-6 md:pr-[150px] md:py-4 focus:outline-none focus:ring-2 font-mono text-base transition-all placeholder:text-white/30 backdrop-blur-md",
                  theme.ring
               )}
             />
@@ -136,10 +136,13 @@ export default function Transcript({ theme }: { theme: ThemeConfig }) {
                   setUrl(text);
                   doProcess(text);
                 } catch(e) {
-                  setToast({ message: "Gagal nempel otomatis, silakan paste manual (Ctrl+V) ya bre!", type: 'error' });
+                  setToast({ message: "Gagal nempel otomatis. Paste manual (Ctrl+V) ya!", type: 'error' });
                 }
               }}
-              className="bg-white/10 hover:bg-white/20 border border-white/5 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-semibold transition-all active:scale-95 flex items-center justify-center shrink-0 w-full sm:w-auto text-sm md:text-base cursor-pointer"
+              className={cn(
+                "absolute right-2 top-1/2 -translate-y-1/2 border border-white/5 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all active:scale-95 flex items-center justify-center text-xs sm:text-sm cursor-pointer z-10",
+                theme.button, "shadow-md hover:brightness-110"
+              )}
             >
               Paste & Proses
             </button>

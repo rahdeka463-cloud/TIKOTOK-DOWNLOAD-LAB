@@ -19,25 +19,29 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col font-sans relative overflow-x-hidden">
       {/* Pre-rendered Platform Background Glows with Hardware Accelerated Transitions */}
-      <div
-        className={cn(
-          "absolute top-0 inset-x-0 h-[700px] bg-gradient-to-b to-transparent pointer-events-none z-0 transition-all duration-1000 ease-in-out platform-glow",
-          theme.gradient
-        )}
-        style={{ opacity: 0.35 }}
-      />
+      <div className="absolute top-0 inset-x-0 h-[700px] pointer-events-none z-0">
+        {(['TikTok', 'YouTube', 'Instagram', 'Facebook', 'Twitter', 'Spotify', 'Transcript'] as Platform[]).map(p => (
+          <div
+            key={p}
+            className={cn(
+              "absolute inset-0 bg-gradient-to-b to-transparent transition-opacity duration-1000 ease-in-out platform-glow opacity-0",
+              platformThemes[p].gradient
+            )}
+            style={{ opacity: activePlatform === p ? 0.35 : 0 }}
+          />
+        ))}
+      </div>
       
       {/* Header Info */}
       <header className="w-full max-w-6xl mx-auto pt-16 pb-8 md:pt-20 md:pb-10 px-4 text-center relative z-10">
-        <motion.h1 
-          layout
+        <h1 
           className={cn(
-            "text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r tracking-tight mb-4 md:mb-6 drop-shadow-sm font-['Space_Grotesk'] leading-tight py-1",
+            "text-4xl sm:text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r tracking-tight mb-4 md:mb-6 drop-shadow-sm font-['Space_Grotesk'] leading-tight py-1 transition-all duration-500",
             theme.textGradient
           )}
         >
           TIKOTOK DOWNLOAD LAB
-        </motion.h1>
+        </h1>
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,13 +134,13 @@ export default function App() {
       <main className="flex-1 relative z-10 w-full mb-24 space-y-20 md:space-y-28">
         <AnimatePresence mode="wait">
           <motion.section 
-            key={activePlatform}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            key={activePlatform === 'Transcript' ? 'transcript' : 'downloader'}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
             id="downloader"
-            className="will-change-transform"
+            className="will-change-transform w-full"
           >
             {activePlatform === 'Transcript' ? (
               <Transcript theme={theme} />
